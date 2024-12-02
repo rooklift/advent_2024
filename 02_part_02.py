@@ -6,11 +6,7 @@ def parser(filename):
 
 
 def same_sign(a, b):				# Don't care about cases where either number is zero
-	if a < 0 and b < 0:
-		return True
-	if a > 0 and b > 0:
-		return True
-	return False
+	return (a < 0 and b < 0) or (a > 0 and b > 0)
 
 
 def sequence_is_safe(arr):
