@@ -38,16 +38,13 @@ def alternatives(arr):
 
 
 def main():
-
 	num_list = parser("02_input.txt")
-
 	count = 0
 	for line in num_list:
 		for alt in alternatives(line):
 			if sequence_is_safe(alt):
 				count += 1
 				break
-
 	print(count)
 
 
