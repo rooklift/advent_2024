@@ -54,7 +54,7 @@ class Result():
 		self.escaped = escaped
 
 
-def test_path(grid, obx, oby, initialx, initialy):				# Returns spots visited if the guard escapes, otherwise returns -1
+def test_path(grid, obx, oby, initialx, initialy):
 
 	width = len(grid)
 	height = len(grid[0])
