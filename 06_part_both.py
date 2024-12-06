@@ -62,16 +62,13 @@ def main():
 
 	count = 0
 
-	i = 0
 	for x, y in visited:
-		i += 1
-		print(i)
 		if (x, y) == (initialx, initialy):
 			continue
 		if test_obstruction(grid, x, y, initialx, initialy):
 			count += 1
 
-	print(count)
+	print(count)					# Part 2 answer
 
 
 def test_obstruction(grid, obx, oby, initialx, initialy):
