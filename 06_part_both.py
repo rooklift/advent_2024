@@ -34,7 +34,7 @@ def main():
 				initialy = y
 
 	p1_result = test_path(grid, None, None, initialx, initialy)
-	print(len(p1_result.visited))
+	print(len(p1_result.visited))								# Part 1 answer
 
 	count = 0
 
