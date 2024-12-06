@@ -33,45 +33,28 @@ def main():
 				initialx = x
 				initialy = y
 
-	gx = initialx
-	gy = initialy
-	direction = UP
-
-	visited = set()
-	visited.add((gx, gy))
-
-	while True:
-
-		nextx = gx + vectors[direction][0]
-		nexty = gy + vectors[direction][1]
-
-		if nextx < 0 or nextx >= width or nexty < 0 or nexty >= height:
-			break
-
-		if grid[nextx][nexty] == "#":
-			direction = turns[direction]
-			continue
-
-		gx = nextx
-		gy = nexty
-		visited.add((gx, gy))
-
-	print(len(visited))				# Part 1 answer
-
-	# -------------------------------------------------------
+	p1_result = test_path(grid, None, None, initialx, initialy)
+	print(len(p1_result.visited))
 
 	count = 0
 
-	for x, y in visited:
+	for x, y in p1_result.visited:
 		if (x, y) == (initialx, initialy):
 			continue
-		if test_obstruction(grid, x, y, initialx, initialy):
+		foo = test_path(grid, x, y, initialx, initialy)
+		if not foo.escaped:
 			count += 1
 
-	print(count)					# Part 2 answer
+	print(count)												# Part 2 answer
 
 
-def test_obstruction(grid, obx, oby, initialx, initialy):
+class Result():
+	def __init__(self, visited, escaped):
+		self.visited = visited
+		self.escaped = escaped
+
+
+def test_path(grid, obx, oby, initialx, initialy):				# Returns spots visited if the guard escapes, otherwise returns -1
 
 	width = len(grid)
 	height = len(grid[0])
@@ -80,7 +63,11 @@ def test_obstruction(grid, obx, oby, initialx, initialy):
 	gy = initialy
 	direction = UP
 
-	states = set()		# This is now just to detect cycles
+	visited = set()		# Detect spots visited
+	states = set()		# Detect cycles
+
+	visited.add((gx, gy))
+	states.add((gx, gy, direction))
 
 	while True:
 
@@ -88,7 +75,7 @@ def test_obstruction(grid, obx, oby, initialx, initialy):
 		nexty = gy + vectors[direction][1]
 
 		if nextx < 0 or nextx >= width or nexty < 0 or nexty >= height:
-			return False
+			return Result(visited, True)
 
 		if grid[nextx][nexty] == "#" or (nextx == obx and nexty == oby):
 			direction = turns[direction]
@@ -98,8 +85,9 @@ def test_obstruction(grid, obx, oby, initialx, initialy):
 		gy = nexty
 
 		if (gx, gy, direction) in states:
-			return True
+			return Result(visited, False)
 
+		visited.add((gx, gy))
 		states.add((gx, gy, direction))
 
 
