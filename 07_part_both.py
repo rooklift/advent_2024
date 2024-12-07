@@ -43,5 +43,4 @@ def test(target, acc, vals, concat = False):				# Either returns target or 0
 		return 0
 
 
-
 main()
