@@ -24,6 +24,8 @@ def main():
 
 
 def test(target, acc, vals, concat = False):				# Either returns target or 0
+	if acc > target:
+		return 0
 	if len(vals) == 0:
 		if acc == target:
 			return target
