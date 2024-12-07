@@ -31,9 +31,7 @@ def test(target, acc, vals, concat = False):				# Either returns target or 0
 			return target
 		else:
 			return 0
-	add = acc + vals[0]
-	mult = acc * vals[0]
-	if test(target, add, vals[1:], concat) or test(target, mult, vals[1:], concat):
+	if test(target, acc + vals[0], vals[1:], concat) or test(target, acc * vals[0], vals[1:], concat):
 		return target
 	elif concat:
 		foo = int(str(acc) + str(vals[0]))
