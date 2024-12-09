@@ -3,15 +3,11 @@ def parser(filename):
 		data = infile.read().strip()
 	return data
 
-
-class Item():									# Either a file or a region of empty space
+class Item():										# Either a file or a region of empty space
 	def __init__(self, fid, location, length):
 		self.fid = fid
 		self.location = location
 		self.length = length
-
-	def __str__(self):
-		return f"{self.fid}, {self.location}, {self.length}"
 
 	def checksum(self):
 		ret = 0
@@ -19,10 +15,7 @@ class Item():									# Either a file or a region of empty space
 			ret += self.fid * i
 		return ret
 
-
-def main():
-
-	data = parser("09_input.txt")
+def load_data(data):
 
 	files = []
 	spaces = []
@@ -32,17 +25,21 @@ def main():
 	location = 0
 
 	for c in data:
-
 		val = int(c)
-
 		if not empty:
 			files.append(Item(fid, location, val))
 			fid += 1
 		else:
 			spaces.append(Item(None, location, val))
-
 		empty = not empty
 		location += val
+
+	return files, spaces
+
+
+def main():
+
+	files, spaces = load_data(parser("09_input.txt"))
 
 	for file in files[::-1]:
 		for space in spaces:
@@ -53,7 +50,6 @@ def main():
 				space.length -= file.length
 				space.location += file.length
 				break
-
 
 	result = 0
 
