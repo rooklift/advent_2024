@@ -13,12 +13,9 @@ class Item():										# Either a file or a region of empty space
 
 
 def parser(filename):
+
 	with open(filename) as infile:
 		data = infile.read().strip()
-	return data
-
-
-def load_data(data):
 
 	files = []
 	spaces = []
@@ -42,7 +39,7 @@ def load_data(data):
 
 def main():
 
-	files, spaces = load_data(parser("09_input.txt"))
+	files, spaces = parser("09_input.txt")
 
 	for file in files[::-1]:
 		for space in spaces:
@@ -62,7 +59,6 @@ def main():
 		result += file.checksum()
 
 	print(result)
-
 
 
 main()
