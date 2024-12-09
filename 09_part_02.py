@@ -20,18 +20,16 @@ def parser(filename):
 	files = []
 	spaces = []
 
-	fid = 0
-	empty = False
 	location = 0
 
-	for c in data:
+	for i, c in enumerate(data):
 		val = int(c)
+		empty = i % 2 == 1
 		if not empty:
+			fid = i // 2
 			files.append(Item(fid, location, val))
-			fid += 1
 		else:
 			spaces.append(Item(None, location, val))
-		empty = not empty
 		location += val
 
 	return files, spaces
