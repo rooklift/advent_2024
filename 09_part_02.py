@@ -54,6 +54,8 @@ def main():
 				space.location += file.length
 				break
 
+	# We rely on the fact that we never need to merge empty spaces.
+
 	result = 0
 
 	for file in files:
