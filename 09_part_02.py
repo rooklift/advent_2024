@@ -1,7 +1,3 @@
-def parser(filename):
-	with open(filename) as infile:
-		data = infile.read().strip()
-	return data
 
 class Item():										# Either a file or a region of empty space
 	def __init__(self, fid, location, length):
@@ -14,6 +10,13 @@ class Item():										# Either a file or a region of empty space
 		for i in range(self.location, self.location + self.length):
 			ret += self.fid * i
 		return ret
+
+
+def parser(filename):
+	with open(filename) as infile:
+		data = infile.read().strip()
+	return data
+
 
 def load_data(data):
 
