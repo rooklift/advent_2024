@@ -12,14 +12,14 @@ def parser(filename):
 
 def recurse(grid, x, y):		# Returns set of all 9s reachable from the point, and the rating
 
-	ret = set()
+	peaks = set()
 	rating = 0
 
 	val = grid[x][y]
 
 	if val == 9:
-		ret.add((x, y))
-		return ret, 1
+		peaks.add((x, y))
+		return peaks, 1
 
 	vecs = []
 
@@ -34,11 +34,11 @@ def recurse(grid, x, y):		# Returns set of all 9s reachable from the point, and 
 
 	for vec in vecs:
 		if grid[x + vec[0]][y + vec[1]] == val + 1:
-			peaks, r = recurse(grid, x + vec[0], y + vec[1])
-			ret.update(peaks)
+			new_peaks, r = recurse(grid, x + vec[0], y + vec[1])
+			peaks.update(new_peaks)
 			rating += r
 
-	return ret, rating
+	return peaks, rating
 
 
 def main():
