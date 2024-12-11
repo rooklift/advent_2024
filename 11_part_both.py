@@ -13,10 +13,6 @@ def act(stone):
 	if len(s) % 2 == 0:
 		a = s[:len(s) // 2]
 		b = s[len(s) // 2:]
-		while a.startswith("0") and len(a) > 1:
-			a = a[1:]
-		while b.startswith("0") and len(b) > 1:
-			b = b[1:]
 		return [int(a), int(b)]
 	return [stone * 2024]
 
