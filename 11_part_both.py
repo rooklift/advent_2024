@@ -24,7 +24,7 @@ def main():
 	raw_vals = parser("11_input.txt")
 	stones = defaultdict(int)			# Val --> count
 	for val in raw_vals:
-		stones[val] = 1
+		stones[val] += 1
 	for n in range(75):
 		next_stones = defaultdict(int)
 		for stone, count in stones.items():
