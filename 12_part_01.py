@@ -52,12 +52,97 @@ def perimeter(field):
 				ret += 1
 	return ret
 
+def fence_count(field):
+
+	# A fence is an uninterrupted stretch where there is field crop on one side and not on the other.
+
+	ret = 0
+
+	x1, y1, x2, y2 = bounds(field)
+
+	# Horizontal scans...  (fixme: should look both ways at once?)
+
+	for y in range(y1, y2):
+		saw_fence_last_iter = False
+		for x in range(x1, x2):
+			if (x, y) not in field:
+				saw_fence_last_iter = False
+				continue
+			if (x, y - 1) not in field:
+				if not saw_fence_last_iter:
+					ret += 1
+				saw_fence_last_iter = True
+			else:
+				saw_fence_last_iter = False
+
+	for y in range(y1, y2):
+		saw_fence_last_iter = False
+		for x in range(x1, x2):
+			if (x, y) not in field:
+				saw_fence_last_iter = False
+				continue
+			if (x, y + 1) not in field:
+				if not saw_fence_last_iter:
+					ret += 1
+				saw_fence_last_iter = True
+			else:
+				saw_fence_last_iter = False
+
+	# Vertical scans...  (fixme: should look both ways at once?)
+
+	for x in range(x1, x2):
+		saw_fence_last_iter = False
+		for y in range(y1, y2):
+			if (x, y) not in field:
+				saw_fence_last_iter = False
+				continue
+			if (x - 1, y) not in field:
+				if not saw_fence_last_iter:
+					ret += 1
+				saw_fence_last_iter = True
+			else:
+				saw_fence_last_iter = False
+
+	for x in range(x1, x2):
+		saw_fence_last_iter = False
+		for y in range(y1, y2):
+			if (x, y) not in field:
+				saw_fence_last_iter = False
+				continue
+			if (x + 1, y) not in field:
+				if not saw_fence_last_iter:
+					ret += 1
+				saw_fence_last_iter = True
+			else:
+				saw_fence_last_iter = False
+
+	return ret
+
+def bounds(field):
+	x1 = 9999
+	y1 = 9999
+	x2 = -1
+	y2 = -1
+	for x, y in field:
+		if x < x1:
+			x1 = x
+		if y < y1:
+			y1 = y
+		if x > x2:
+			x2 = x
+		if y > y2:
+			y2 = y
+	return x1, y1, x2 + 1, y2 + 1
+
 def main():
 	grid = parser("12_input.txt")
 	fields = get_all_fields(grid)
-	result = 0
+	p1 = 0
+	p2 = 0
 	for field in fields:
-		result += len(field) * perimeter(field)
-	print(result)
+		p1 += len(field) * perimeter(field)
+		p2 += len(field) * fence_count(field)
+	print(p1)
+	print(p2)
 
 main()
