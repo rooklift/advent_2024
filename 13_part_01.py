@@ -50,17 +50,12 @@ def cost(mc):								# Return 0 if impossible
 			break
 		dx = mc.prize.x - x
 		dy = mc.prize.y - y
-		pb = None
 		if dx % mc.b.x == 0 and dy % mc.b.y == 0:
 			if dx // mc.b.x == dy // mc.b.y:
 				pb = dx // mc.b.x
-		else:
-			continue
-		if pb == None:
-			continue
-		this_cost = (pa * A_COST) + (pb * B_COST)
-		if best == None or this_cost < best:
-			best =  this_cost
+				this_cost = (pa * A_COST) + (pb * B_COST)
+				if best == None or this_cost < best:
+					best =  this_cost
 	if best == None:
 		return 0
 	else:
