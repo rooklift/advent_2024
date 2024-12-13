@@ -1,3 +1,5 @@
+# My second solution, looking up the maths.
+
 A_COST = 3
 B_COST = 1
 
