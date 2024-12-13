@@ -92,10 +92,10 @@ def cost_mathy(mc):
 	intercept.x = round(intercept.x)			# This might be quite a big adjustment but we only need the
 	intercept.y = round(intercept.y)			# closest ints to the real intercept since we validate later.
 
-	pa = intercept.x // mc.a.x
-	pb = (mc.prize.x - intercept.x) // mc.b.x
+	pa = intercept.x // mc.a.x					# How many times to press A
+	pb = (mc.prize.x - intercept.x) // mc.b.x	# How many times to press B
 
-	# Validate that pa presses of A and pb presses of B actually work...
+	# Validate that those numbers actually work (they won't if we did actual rounding or flooring at any point).
 
 	if pa * mc.a.x + pb * mc.b.x != mc.prize.x:
 		return 0
