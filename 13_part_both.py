@@ -33,9 +33,8 @@ class Vector():
 	def __str__(self):
 		return f"({self.x},{self.y})"
 
-
-def same_direction(vec1, vec2):					# OK I asked Claude how to check this. Only used for assertions anyway.
-	return vec1.x * vec2.y == vec1.y * vec2.x
+	def same_direction(self, other):			# OK I asked Claude how to check this. Only used for assertions anyway.
+		return self.x * other.y == self.y * other.x
 
 # -------------------------------------------------------------------------------------------------
 
@@ -54,9 +53,9 @@ class Machine():
 		self.check_directions()
 
 	def check_directions(self):
-		assert(not same_direction(self.prize, self.a))
-		assert(not same_direction(self.prize, self.b))
-		assert(not same_direction(self.a, self.b))
+		assert(not self.prize.same_direction(self.a))
+		assert(not self.prize.same_direction(self.b))
+		assert(not self.a.same_direction(self.b))
 
 	def __str__(self):
 		return f"A: {self.a.x}, {self.a.y};  B: {self.b.x}, {self.b.y};  Pz: {self.prize.x}, {self.prize.y}"
