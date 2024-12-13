@@ -154,7 +154,7 @@ def cost_smart(mc):
 
 		if wrongness_sign < 0:					# Need more pushes of A
 			lower = mid
-		elif wrongness_sign >= 0:				# Need less pushes of A, or exactly this number
+		else:									# Need less pushes of A, or exactly this number
 			upper = mid
 
 	# Now we have a small range of possibles:
