@@ -89,32 +89,18 @@ def cost_mathy(mc):
 	if intercept.x < 0 or intercept.y < 0 or intercept.x > mc.prize.x or intercept.y > mc.prize.y:
 		return 0
 
-	epsilon_x = abs(intercept.x - int(intercept.x))
-	epsilon_y = abs(intercept.y - int(intercept.y))
+	intercept.x = round(intercept.x)			# This might be quite a big adjustment but we only need the
+	intercept.y = round(intercept.y)			# closest ints to the real intercept since we validate later.
 
-	if epsilon_x > 0.00001 or epsilon_y > 0.00001:
+	pa = intercept.x // mc.a.x
+	pb = (mc.prize.x - intercept.x) // mc.b.x
+
+	# Validate that pa presses of A and pb presses of B actually work...
+
+	if pa * mc.a.x + pb * mc.b.x != mc.prize.x:
 		return 0
 
-	intercept.x = round(intercept.x)
-	intercept.y = round(intercept.y)
-
-	if intercept.x % mc.a.x == 0 and intercept.y % mc.a.y == 0:
-		if intercept.x // mc.a.x == intercept.y // mc.a.y:
-			pa = intercept.x // mc.a.x
-		else:
-			return 0							# Is this even possible?
-	else:
-		return 0
-
-	dx = mc.prize.x - intercept.x
-	dy = mc.prize.y - intercept.y
-
-	if dx % mc.b.x == 0 and dy % mc.b.y == 0:
-		if dx // mc.b.x == dy // mc.b.y:
-			pb = dx // mc.b.x
-		else:
-			return 0							# Is this even possible?
-	else:
+	if pa * mc.a.y + pb * mc.b.y != mc.prize.y:
 		return 0
 
 	return (pa * A_COST) + (pb * B_COST)
