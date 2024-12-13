@@ -1,3 +1,6 @@
+A_COST = 3
+B_COST = 1
+
 def parser(filename):
 	with open(filename) as infile:
 		raw = infile.read()
@@ -20,6 +23,8 @@ def parser(filename):
 		ret2.append(Machine(a, b, prize2))
 	return ret1, ret2
 
+# -------------------------------------------------------------------------------------------------
+
 class Vector():
 	def __init__(self, x, y):
 		self.x = x
@@ -29,15 +34,14 @@ class Vector():
 		return f"({self.x},{self.y})"
 
 
-def same_direction(vec1, vec2):				# OK I asked Claude how to check this.
+def same_direction(vec1, vec2):					# OK I asked Claude how to check this. Only used for assertions anyway.
 	return vec1.x * vec2.y == vec1.y * vec2.x
 
-
-A_COST = 3
-B_COST = 1
+# -------------------------------------------------------------------------------------------------
 
 class Machine():
-	def __init__(self, a, b, prize):		# Where everything is a Vector.
+
+	def __init__(self, a, b, prize):			# Where everything is a Vector.
 		self.a = a
 		self.b = b
 		self.prize = prize
@@ -63,7 +67,7 @@ class Machine():
 	def intercept_is_low(self):
 		return self.b_steepness > self.prize_steepness and self.prize_steepness > self.a_steepness
 
-	def cost_for_a_presses(self, pa):		# Returns 0 if this is not a solution.
+	def cost_for_a_presses(self, pa):			# Returns 0 if this is not a solution.
 		ix = self.a.x * pa
 		iy = self.a.y * pa
 		if ix > self.prize.x or iy > self.prize.y:
@@ -109,19 +113,9 @@ class Machine():
 
 		raise AssertionError
 
+# -------------------------------------------------------------------------------------------------
 
-def main():
-	machines1, machines2 = parser("13_input.txt")
-	p1 = 0
-	for machine in machines1:
-		p1 += cost_stupid(machine)			# Original simple solution.
-	p2 = 0
-	for machine in machines2:
-		p2 += cost_smart(machine)			# More complex solution.
-	print(p1)
-	print(p2)
-
-def cost_stupid(mc):						# Return 0 if impossible.
+def cost_stupid(mc):							# Simple brute force. Return 0 if impossible.
 	if not mc.possible:
 		return 0
 	best = None
@@ -131,12 +125,13 @@ def cost_stupid(mc):						# Return 0 if impossible.
 			continue
 		elif best == None:
 			best = cost
-		elif cost < best:					# Actually impossible unless vectors can align, which they don't.
+		elif cost < best:						# Actually impossible unless vectors can align, which they don't.
 			best = cost
 	if best == None:
 		return 0
 	else:
 		return best
+
 
 def cost_smart(mc):
 
@@ -144,6 +139,7 @@ def cost_smart(mc):
 		return 0
 
 	# First thing to do: binary-search for the right number of times to press A:
+	# Terminating when the possibles are under 10 in number, avoid worrying about edge cases.
 
 	lower = 0
 	upper = mc.prize.x // mc.a.x
@@ -157,20 +153,31 @@ def cost_smart(mc):
 
 		wrongness_sign = mc.presses_a_wrongness_sign(mid)
 
-		if wrongness_sign < 0:		# Need more pushes of A
+		if wrongness_sign < 0:					# Need more pushes of A
 			lower = mid
-		elif wrongness_sign >= 0:	# Need less pushes of A, or exactly this number
+		elif wrongness_sign >= 0:				# Need less pushes of A, or exactly this number
 			upper = mid
+
+	# Now we have a small range of possibles:
 
 	for pa in range(lower, upper + 1):
 		ret = mc.cost_for_a_presses(pa)
 		if ret:
 			return ret
 
-
 	return 0
 
+# -------------------------------------------------------------------------------------------------
 
-
+def main():
+	machines1, machines2 = parser("13_input.txt")
+	p1 = 0
+	for machine in machines1:
+		p1 += cost_stupid(machine)				# Original simple solution.
+	p2 = 0
+	for machine in machines2:
+		p2 += cost_smart(machine)				# More complex solution.
+	print(p1)
+	print(p2)
 
 main()
