@@ -40,7 +40,7 @@ class Vector():
 
 class Machine():
 
-	def __init__(self, a, b, prize):			# Where everything is a Vector.
+	def __init__(self, a, b, prize):			# Where everything is a Vector. Note one cannot simply adjust a/b/prize after the fact.
 		self.a = a
 		self.b = b
 		self.prize = prize
