@@ -32,7 +32,7 @@ def parser(filename):
 
 def main():
 	robots = parser("14_input.txt")
-	for i in range(0, 10000):
+	for i in range(0, WIDTH * HEIGHT):		# After this many ticks everything will be back where it started, I think.
 		positions = set()
 		for robot in robots:
 			x, y = robot.position_after(i)
