@@ -141,7 +141,7 @@ def get_connected_vertical_bfs(maze, direction, x, y):
 
 		new_y = y + vecs[direction][1]
 
-		if (x, new_y) in result:
+		if this_half(maze, x, new_y) in result:
 			continue
 
 		if maze[x][new_y] in "[]":
