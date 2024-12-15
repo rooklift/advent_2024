@@ -1,3 +1,5 @@
+import random
+
 def parser(filename):
 
 	with open(filename) as infile:
@@ -78,7 +80,12 @@ def get_moveables_horizontal(maze, direction, x, y):
 
 def get_moveables_vertical(maze, direction, box_x, box_y):
 
-	items = get_connected_vertical_dfs(maze, direction, box_x, box_y)		# Or use the BFS.
+	# Randomly choose between using DFS and BFS:
+
+	if random.choice([False, True]):
+		items = get_connected_vertical_dfs(maze, direction, box_x, box_y)
+	else:
+		items = get_connected_vertical_bfs(maze, direction, box_x, box_y)
 
 	for item in items:
 		x = item[0]
@@ -135,16 +142,13 @@ def get_connected_vertical_bfs(maze, direction, x, y):
 	while len(queue) > 0:
 
 		item = queue.pop(0)
-
 		x = item[0]
 		y = item[1]
-
 		new_y = y + vecs[direction][1]
 
-		if this_half(maze, x, new_y) in result:
-			continue
-
 		if maze[x][new_y] in "[]":
+			if this_half(maze, x, new_y) in result:
+				continue
 			result.add(this_half(maze, x, new_y))
 			result.add(other_half(maze, x, new_y))
 			queue.append(this_half(maze, x, new_y))
