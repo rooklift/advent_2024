@@ -78,7 +78,7 @@ def get_moveables_horizontal(maze, direction, x, y):
 
 def get_moveables_vertical(maze, direction, box_x, box_y):
 
-	items = get_connected_vertical(maze, direction, box_x, box_y)
+	items = get_connected_vertical_dfs(maze, direction, box_x, box_y)		# Or use the BFS.
 
 	for item in items:
 		x = item[1]
@@ -90,7 +90,36 @@ def get_moveables_vertical(maze, direction, box_x, box_y):
 	return list(items)
 
 
-def get_connected_vertical(maze, direction, x, y):
+def get_connected_vertical_dfs(maze, direction, x, y, seen = None):
+
+	initial_call = False
+
+	if seen == None:
+		initial_call = True
+		seen = set()
+		seen.add(this_half(maze, x, y))
+
+	this = this_half(maze, x, y)
+	other = other_half(maze, x, y)
+
+	# Each item does 2 things: pushes up or down, and drags the other half of its own box [].
+
+	if other not in seen:
+		seen.add(other)
+		get_connected_vertical_dfs(maze, direction, other[1], y, seen)
+
+	new_y = y + vecs[direction][1]
+	if maze[x][new_y] in "[]":
+		pushing = this_half(maze, x, new_y)
+		if pushing not in seen:
+			seen.add(pushing)
+			get_connected_vertical_dfs(maze, direction, x, new_y, seen)
+
+	if initial_call:
+		return list(seen)
+
+
+def get_connected_vertical_bfs(maze, direction, x, y):
 
 	result = set();
 	result.add(this_half(maze, x, y))
