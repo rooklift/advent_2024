@@ -138,7 +138,7 @@ def main():
 				maze[x][y] = "."
 
 	for c in directions:
-		rx, ry = update(maze, c, rx, ry)				# Also updates maze as a side-effect
+		rx, ry = update(maze, c, rx, ry)			# Also updates maze as a side-effect
 
 	result = 0
 
