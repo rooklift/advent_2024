@@ -36,19 +36,19 @@ vecs = {
 }
 
 # -------------------------------------------------------------------------------------------------
-# Note we store moveables as (c, x, y) where c is "[" or "]"
+# Note we store moveables as (x, y, c) where c is "[" or "]"
 
 def this_half(maze, x, y):
 	assert(maze[x][y] in "[]")
-	return (maze[x][y], x, y)
+	return (x, y, maze[x][y])
 
 
 def other_half(maze, x, y):
 	assert(maze[x][y] in "[]")
 	if maze[x][y] == "[":
-		return ("]", x + 1, y)
+		return (x + 1, y, "]")
 	else:
-		return ("[", x - 1, y)
+		return (x - 1, y, "[")
 
 # -------------------------------------------------------------------------------------------------
 
@@ -81,14 +81,16 @@ def get_moveables_vertical(maze, direction, box_x, box_y):
 	items = get_connected_vertical_dfs(maze, direction, box_x, box_y)		# Or use the BFS.
 
 	for item in items:
-		x = item[1]
-		y = item[2]
+		x = item[0]
+		y = item[1]
 		new_y = y + vecs[direction][1]
 		if maze[x][new_y] == "#":
 			return []
 
 	return list(items)
 
+# -------------------------------------------------------------------------------------------------
+# Both DFS and BFS are present here just for practice...
 
 def get_connected_vertical_dfs(maze, direction, x, y, seen = None):
 
@@ -106,7 +108,7 @@ def get_connected_vertical_dfs(maze, direction, x, y, seen = None):
 
 	if other not in seen:
 		seen.add(other)
-		get_connected_vertical_dfs(maze, direction, other[1], y, seen)
+		get_connected_vertical_dfs(maze, direction, other[0], y, seen)
 
 	new_y = y + vecs[direction][1]
 	if maze[x][new_y] in "[]":
@@ -121,7 +123,7 @@ def get_connected_vertical_dfs(maze, direction, x, y, seen = None):
 
 def get_connected_vertical_bfs(maze, direction, x, y):
 
-	result = set();
+	result = set()
 	result.add(this_half(maze, x, y))
 	result.add(other_half(maze, x, y))
 
@@ -134,8 +136,8 @@ def get_connected_vertical_bfs(maze, direction, x, y):
 
 		item = queue.pop(0)
 
-		x = item[1]
-		y = item[2]
+		x = item[0]
+		y = item[1]
 
 		new_y = y + vecs[direction][1]
 
@@ -200,12 +202,12 @@ def update(maze, direction, rx, ry):				# Update maze... return robot_x, robot_y
 		return rx, ry
 
 	for item in moveables:
-		maze[item[1]][item[2]] = "."
+		maze[item[0]][item[1]] = "."
 
 	for item in moveables:
-		new_x = item[1] + vecs[direction][0]
-		new_y = item[2] + vecs[direction][1]
-		maze[new_x][new_y] = item[0]
+		new_x = item[0] + vecs[direction][0]
+		new_y = item[1] + vecs[direction][1]
+		maze[new_x][new_y] = item[2]
 
 	return next_robot_x, next_robot_y				# We moved some boxes
 
