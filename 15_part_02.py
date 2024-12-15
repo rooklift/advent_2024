@@ -111,7 +111,7 @@ def get_connected_vertical_dfs(maze, direction, x, y, seen = None):
 	this = this_half(maze, x, y)
 	other = other_half(maze, x, y)
 
-	# Each item does 2 things: pushes up or down, and drags the other half of its own box [].
+	# Each item does 2 things: push vertically; and drag the other half of its own box [].
 
 	if other not in seen:
 		seen.add(other)
@@ -138,6 +138,8 @@ def get_connected_vertical_bfs(maze, direction, x, y):
 		this_half(maze, x, y),
 		other_half(maze, x, y)
 	]
+
+	# Each item only does one thing: push vertically. But doing so always affects two halves of a box.
 
 	while len(queue) > 0:
 
