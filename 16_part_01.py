@@ -274,6 +274,8 @@ def anti_dead_end(original, startx, starty, endx, endy):
 	6. Repeat steps 3-5 until you reach your destination city
 """
 
+# WARNING: I AM NOT 100% SURE ABOUT THE GENERAL CORRECTNESS OF THIS!
+
 def my_dijkstra(possible_states, start, end):			# Returns distance only
 
 	# Step 1:
@@ -314,8 +316,7 @@ def my_dijkstra(possible_states, start, end):			# Returns distance only
 
 			if total_to_neighbour < distances[neighbour]:				# Step 4.2
 				distances[neighbour] = total_to_neighbour				# Step 4.3
-				if neighbour not in consider:
-					consider.append(neighbour)							# Step 4.4
+				consider.append(neighbour)								# Step 4.4
 
 		# Step 5:
 
