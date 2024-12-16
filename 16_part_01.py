@@ -258,11 +258,11 @@ def anti_dead_end(original, startx, starty, endx, endy):
 
 # WARNING: I AM NOT 100% SURE ABOUT THE GENERAL CORRECTNESS OF THIS!
 
-def my_dijkstra(possible_states, start, end):			# Returns distance only
+def dubious_dijkstra(possible_states, start, end):						# Returns distance only
 
 	# Step 1:
 
-	distances = dict()			# state --> dist from start
+	distances = dict()													# state --> dist from start
 
 	for state in possible_states.values():
 		distances[state] = 999999999
@@ -342,7 +342,7 @@ def main():
 	end = possible_states[(endx, endy, UP)]				# Empirically known to be the best way to end.
 
 	t = time.time()
-	result = my_dijkstra(possible_states, start, end)
+	result = dubious_dijkstra(possible_states, start, end)
 	print(f"                   Dijkstra took: {round(time.time() - t, 4)}")
 	print("--------------------------------------------------------------")
 	print(f"                          RESULT: {result}")
