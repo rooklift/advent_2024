@@ -50,6 +50,16 @@ DOWN = (0, 1)
 
 ALL_DIRECTIONS = [UP, RIGHT, DOWN, LEFT]
 
+def perpendicular_directions(d):
+	turns = {
+		RIGHT: [UP, DOWN],
+		LEFT: [UP, DOWN],
+		UP: [LEFT, RIGHT],
+		DOWN: [LEFT, RIGHT],
+	}
+	return turns[d]
+
+# -------------------------------------------------------------------------------------------------
 
 def main():
 
@@ -126,16 +136,6 @@ def get_connection(grid, possible_states, x, y, d):
 				print(x, y)
 				raise AssertionError
 
-
-def perpendicular_directions(d):
-	turns = {
-		RIGHT: [UP, DOWN],
-		LEFT: [UP, DOWN],
-		UP: [LEFT, RIGHT],
-		DOWN: [LEFT, RIGHT],
-	}
-	return turns[d]
-
 # -------------------------------------------------------------------------------------------------
 
 def all_possible_states(grid, startx, starty, endx, endy):
@@ -145,14 +145,14 @@ def all_possible_states(grid, startx, starty, endx, endy):
 
 	width, height = width_height(grid)
 
-	foo = []								# startx, starty, (dx, dy)
+	foo = []													# startx, starty, (dx, dy)
 
 	for x in range(width):
 		for y in range(height):
 			if grid[x][y] == ".":
 				dirs_out = directions_out(grid, x, y)
 				if len(dirs_out) > 2:
-					for d in dirs_out:
+					for d in ALL_DIRECTIONS:
 						foo.append((x, y, d))
 
 	start_present = False
@@ -165,19 +165,11 @@ def all_possible_states(grid, startx, starty, endx, endy):
 
 	assert(start_present == False and end_present == False)		# This will make life easier.
 
-	# Add start...
-
-	for d in directions_out(grid, startx, starty):
+	for d in ALL_DIRECTIONS:
 		foo.append((startx, starty, d))
 
-	if (startx, starty, RIGHT) not in foo:						# Robot starts facing east.
-		foo.append((startx, starty, RIGHT))
-
-	# Add end... note that our robot ends pointing away from a path out, thus the negation...
-
-	for d in directions_out(grid, endx, endy):
-		dx, dy = d
-		foo.append((endx, endy, (-dx, -dy)))
+	for d in ALL_DIRECTIONS:
+		foo.append((endx, endy, d))
 
 	return foo
 
