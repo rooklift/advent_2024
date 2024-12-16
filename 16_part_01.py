@@ -145,7 +145,7 @@ class State():
 
 			# Check if we reached a new node...
 
-			if State(x, y, d) in possible_states:
+			if (x, y, d) in possible_states:
 				self.connections[(x, y, d)] = cost
 				self.tiles_forward = tiles
 				return
@@ -185,10 +185,11 @@ def get_real_state(state_set, fake_state):
 def all_possible_states(grid, startx, starty, endx, endy):
 
 	# Returns all possible states the robot can be in, at the moment when it has to make decisions.
+	# As a dictionary of (x, y, d) --> State object.
 
 	width, height = width_height(grid)
 
-	foo = set()
+	foo = dict()
 
 	start_present = False
 	end_present = False
@@ -199,7 +200,7 @@ def all_possible_states(grid, startx, starty, endx, endy):
 				dirs_out = directions_out(grid, x, y)
 				if len(dirs_out) != 2:						# i.e. it's neither a dead-end nor a junction
 					for d in ALL_DIRECTIONS:
-						foo.add(State(x, y, d))
+						foo[(x, y, d)] = State(x, y, d)
 					if x == startx and y == starty:
 						start_present = True
 					if x == endx and y == endy:
@@ -207,11 +208,11 @@ def all_possible_states(grid, startx, starty, endx, endy):
 
 	if not start_present:
 		for d in ALL_DIRECTIONS:
-			foo.add(State(startx, starty, d))
+			foo[(startx, starty, d)] = State(startx, starty, d)
 
 	if not end_present:
 		for d in ALL_DIRECTIONS:
-			foo.add(State(endx, endy, d))
+			foo[(endx, endy, d)] = State(endx, endy, d)
 
 	return foo
 
@@ -273,18 +274,13 @@ def anti_dead_end(original, startx, starty, endx, endy):
 	6. Repeat steps 3-5 until you reach your destination city
 """
 
-def my_dijkstra(possible_states, start_fake, end_fake):			# Returns distance only
-
-	# Note that the "fake" objects are State objects with correct (x,y,d) but lacking the correct meta-info.
-
-	start = get_real_state(possible_states, start_fake)
-	end = get_real_state(possible_states, end_fake)
+def my_dijkstra(possible_states, start, end):			# Returns distance only
 
 	# Step 1:
 
 	distances = dict()			# state --> dist from start
 
-	for state in possible_states:
+	for state in possible_states.values():
 		distances[state] = 999999999
 
 	distances[start] = 0
@@ -310,8 +306,7 @@ def my_dijkstra(possible_states, start_fake, end_fake):			# Returns distance onl
 
 		for neighbour_tup, distance in current.connections.items():
 
-			neighbour_fake = State(neighbour_tup[0], neighbour_tup[1], neighbour_tup[2])
-			neighbour = get_real_state(possible_states, neighbour_fake)
+			neighbour = possible_states[neighbour_tup]
 
 			# Step 4.1:
 
@@ -352,14 +347,14 @@ def main():
 	# with any real move, once the grid exists...
 
 	t = time.time()
-	for state in possible_states:
+	for state in possible_states.values():
 		state.add_forward_connection(grid, possible_states)
 	print(f"Forward connections took: {time.time() - t}")
 
 	# Now solve...
 
-	start = State(startx, starty, RIGHT)
-	end = State(endx, endy, UP)				# Empirically known to be the best way to end.
+	start = possible_states[(startx, starty, RIGHT)]
+	end = possible_states[(endx, endy, UP)]				# Empirically known to be the best way to end.
 
 	t = time.time()
 	result = my_dijkstra(possible_states, start, end)
