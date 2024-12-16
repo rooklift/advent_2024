@@ -88,7 +88,7 @@ class State():
 		self.y = y
 		self.d = d
 		self.connections = dict()           # (x, y, d) --> cost
-		self.tiles_forward = set()          # set of (x, y) only  =  the tiles you go over when going forward, inclusive of both nodes
+		self.tiles_forward = set()          # set of (x, y) only  =  tiles you go over when going forward, inclusive of both nodes (for PART 2)
 
 		if self.d in [RIGHT, LEFT]:
 			self.connections[(self.x, self.y, UP)] = 1000
