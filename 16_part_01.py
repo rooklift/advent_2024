@@ -103,9 +103,6 @@ class State():
 	def __eq__(self, other):
 		return self.as_tuple() == other.as_tuple()
 
-	def __lt__(self, other):
-		return self.as_tuple() < other.as_tuple()
-
 	def as_tuple(self):
 		return (self.x, self.y, self.d)
 
