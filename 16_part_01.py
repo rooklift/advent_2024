@@ -299,7 +299,7 @@ def my_dijkstra(possible_states, start, end):			# Returns distance only
 		consider.sort(key = lambda foo : distances[foo])
 		current = consider.pop(0)
 
-		# Step 3.1
+		# Step 3.1:
 
 		if current in done:
 			continue
