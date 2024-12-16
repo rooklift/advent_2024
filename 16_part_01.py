@@ -106,9 +106,6 @@ class State():
 	def as_tuple(self):
 		return (self.x, self.y, self.d)
 
-	def matches_tuple(self, tu):
-		return self.as_tuple() == tu
-
 	def add_forward_connection(self, grid, possible_states):
 
 		tiles = set()
@@ -166,14 +163,6 @@ class State():
 				assert(choices == 1)
 
 # -------------------------------------------------------------------------------------------------
-
-def get_real_state(state_set, fake_state):
-
-	# Given some "fake_state" with correct x y d components, get a reference
-	# to the real state in the set. IS THERE A MORE PYTHONIC WAY???
-
-	return next(s for s in state_set if s == fake_state)
-
 
 def all_possible_states(grid, startx, starty, endx, endy):
 
