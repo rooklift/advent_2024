@@ -288,9 +288,7 @@ def dijkstra(possible_states, start, end):						# Returns distance only
 
 		dist_to_current, current = heapq.heappop(consider_pq)
 
-		# Step 3.1:
-
-		if current in done:
+		if current in done:														# Step 3.1
 			continue
 
 		# Step 4:
@@ -302,9 +300,7 @@ def dijkstra(possible_states, start, end):						# Returns distance only
 			if neighbour in done:		# In discussion with Claude, a bit unclear
 				continue				# whether this is necessary or even correct.
 
-			# Step 4.1:
-
-			dist_to_neighbour = dist_to_current + distance
+			dist_to_neighbour = dist_to_current + distance						# Step 4.1
 
 			if dist_to_neighbour < distances[neighbour]:						# Step 4.2
 				distances[neighbour] = dist_to_neighbour						# Step 4.3
