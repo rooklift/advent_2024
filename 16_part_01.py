@@ -243,9 +243,9 @@ def anti_dead_end(original, startx, starty, endx, endy):
 	return grid
 
 # -------------------------------------------------------------------------------------------------
-# So I asked Claude in general terms how to implement Dijkstra and Claude told me this:
-
 """
+So I asked Claude in general terms how to implement Dijkstra and Claude told me this:
+
 	1. Start with your starting city. Mark its "distance from start" as 0, and all other cities as "infinity" distance.
 	2. Keep a list of "cities to consider" and "cities we're done with". Initially, only your starting city is "to consider".
 	3. Among all cities you're currently considering, look at the one with shortest "distance from start". Call this the "current city":
@@ -257,6 +257,12 @@ def anti_dead_end(original, startx, starty, endx, endy):
 			4.4. Add the neighbor to "cities to consider" (even if it's been considered before)
 	5. Mark current city as "done" - we've found the shortest possible path to it
 	6. Repeat steps 3-5 until you reach your destination city
+
+Also:
+
+	To return the actual path [not done below], we would need to keep track of how we reached each node during the algorithm.
+	The common approach is to maintain a "came_from" dictionary that records the predecessor of each node on its shortest path.
+
 """
 
 def dijkstra(possible_states, start, end):						# Returns distance only
@@ -272,8 +278,8 @@ def dijkstra(possible_states, start, end):						# Returns distance only
 
 	# Step 2:
 
-	consider_pq = [(0, start)]		# Note: to maintain the heap, the implied sort ordering of the items
-									# needs to be correct, hence why we include the distance.
+	consider_pq = [(0, start)]			# Note: to maintain the heap, the implied sort ordering of the items
+										# needs to be correct, hence why we include the distance.
 	done = set()
 
 	while True:
@@ -292,6 +298,9 @@ def dijkstra(possible_states, start, end):						# Returns distance only
 		for neighbour_tup, distance in current.connections.items():
 
 			neighbour = possible_states[neighbour_tup]
+
+			if neighbour in done:		# In discussion with Claude, a bit unclear
+				continue				# whether this is necessary or even correct.
 
 			# Step 4.1:
 
