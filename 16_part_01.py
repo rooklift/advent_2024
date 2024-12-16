@@ -259,9 +259,7 @@ def anti_dead_end(original, startx, starty, endx, endy):
 	6. Repeat steps 3-5 until you reach your destination city
 """
 
-# WARNING: I AM NOT 100% SURE ABOUT THE GENERAL CORRECTNESS OF THIS!
-
-def dubious_dijkstra(possible_states, start, end):				# Returns distance only
+def dijkstra(possible_states, start, end):						# Returns distance only
 
 	# Step 1:
 
