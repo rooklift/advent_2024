@@ -1,4 +1,4 @@
-import copy, time
+import copy, heapq, time
 
 # -------------------------------------------------------------------------------------------------
 
@@ -102,6 +102,9 @@ class State():
 
 	def __eq__(self, other):
 		return self.as_tuple() == other.as_tuple()
+
+	def __lt__(self, other):
+		return self.as_tuple() < other.as_tuple()
 
 	def as_tuple(self):
 		return (self.x, self.y, self.d)
@@ -258,11 +261,11 @@ def anti_dead_end(original, startx, starty, endx, endy):
 
 # WARNING: I AM NOT 100% SURE ABOUT THE GENERAL CORRECTNESS OF THIS!
 
-def dubious_dijkstra(possible_states, start, end):						# Returns distance only
+def dubious_dijkstra(possible_states, start, end):				# Returns distance only
 
 	# Step 1:
 
-	distances = dict()													# state --> dist from start
+	distances = dict()											# state --> dist from start
 
 	for state in possible_states.values():
 		distances[state] = 999999999
@@ -271,15 +274,15 @@ def dubious_dijkstra(possible_states, start, end):						# Returns distance only
 
 	# Step 2:
 
-	consider = [start]
+	consider_pq = [(0, start)]		# Note: to maintain the heap, the implied sort ordering of the items
+									# needs to be correct, hence why we include the distance.
 	done = set()
 
 	while True:
 
 		# Step 3:
 
-		consider.sort(key = lambda foo : distances[foo])
-		current = consider.pop(0)
+		dist_to_current, current = heapq.heappop(consider_pq)
 
 		# Step 3.1:
 
@@ -294,11 +297,11 @@ def dubious_dijkstra(possible_states, start, end):						# Returns distance only
 
 			# Step 4.1:
 
-			total_to_neighbour = distances[current] + distance
+			dist_to_neighbour = dist_to_current + distance
 
-			if total_to_neighbour < distances[neighbour]:				# Step 4.2
-				distances[neighbour] = total_to_neighbour				# Step 4.3
-				consider.append(neighbour)								# Step 4.4
+			if dist_to_neighbour < distances[neighbour]:						# Step 4.2
+				distances[neighbour] = dist_to_neighbour						# Step 4.3
+				heapq.heappush(consider_pq, (dist_to_neighbour, neighbour))		# Step 4.4
 
 		# Step 5:
 
