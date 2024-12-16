@@ -311,6 +311,8 @@ def my_dijkstra(possible_states, start, end):			# Returns distance only
 
 def main():
 
+	print("--------------------------------------------------------------")
+
 	original, startx, starty, endx, endy = parser("16_input.txt")
 	width, height = width_height(original)
 
@@ -318,13 +320,13 @@ def main():
 
 	t = time.time()
 	grid = anti_dead_end(original, startx, starty, endx, endy)
-	print(f"Dead-end removal took: {time.time() - t}")
+	print(f"           Dead-end removal took: {round(time.time() - t, 4)}")
 
 	# Find all possible states the robot can be in while deciding what to do...
 
 	t = time.time()
 	possible_states = all_possible_states(grid, startx, starty, endx, endy)
-	print(f"Possible state creation took: {time.time() - t}")
+	print(f"    Possible state creation took: {round(time.time() - t, 4)}")
 
 	# When states are created they auto-add their trivial moves, but need to update themselves
 	# with any real move, once the grid exists...
@@ -332,7 +334,7 @@ def main():
 	t = time.time()
 	for state in possible_states.values():
 		state.add_forward_connection(grid, possible_states)
-	print(f"Forward connections took: {time.time() - t}")
+	print(f"        Forward connections took: {round(time.time() - t, 4)}")
 
 	# Now solve...
 
@@ -341,8 +343,9 @@ def main():
 
 	t = time.time()
 	result = my_dijkstra(possible_states, start, end)
-	print(f"Dijkstra took: {time.time() - t}")
-	print("----")
-	print(f"RESULT: {result}")
+	print(f"                   Dijkstra took: {round(time.time() - t, 4)}")
+	print("--------------------------------------------------------------")
+	print(f"                          RESULT: {result}")
+	print("--------------------------------------------------------------")
 
 main()
