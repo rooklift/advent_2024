@@ -343,7 +343,7 @@ def main():
 	end = possible_states[(endx, endy, UP)]				# Empirically known to be the best way to end.
 
 	t = time.time()
-	result = dubious_dijkstra(possible_states, start, end)
+	result = dijkstra(possible_states, start, end)
 	print(f"                   Dijkstra took: {round(time.time() - t, 4)}")
 	print("--------------------------------------------------------------")
 	print(f"                          RESULT: {result}")
