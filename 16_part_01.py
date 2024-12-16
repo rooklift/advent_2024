@@ -61,6 +61,59 @@ def perpendicular_directions(d):
 
 # -------------------------------------------------------------------------------------------------
 
+class State():
+
+	# A state is a robot pointing in a certain direction, at a certain place.
+	# In general, it will have 2 or 3 options:
+	#	- Turn left
+	#	- Turn right
+	#	- Go forward if possible (might not be)
+
+	def __init__(self, x, y, d):
+		self.x = x
+		self.y = y
+		self.d = d
+		self.connections = []
+
+	def __str__(self):
+		s = f"({self.x}, {self.y}, {self.d})"
+		for c in self.connections:
+			s += f"\n --> ({c.tarx}, {c.tary}, {c.tard}), ${c.cost}"
+		return s
+
+	def trivial_moves(self):
+		if self.d in [RIGHT, LEFT]:
+			return [Move(self.x, self.y, UP, 1000), Move(self.x, self.y, DOWN, 1000)]
+		if self.d in [UP, DOWN]:
+			return [Move(self.x, self.y, LEFT, 1000), Move(self.x, self.y, RIGHT, 1000)]
+		assert(False)
+
+	def set_connections(self, foo):
+		self.connections = foo
+
+
+class Move():
+	def __init__(self, tarx, tary, tard, cost):
+		self.tarx = tarx
+		self.tary = tary
+		self.tard = tard
+		self.cost = cost
+
+
+def arr_has_state(arr, x, y, d):
+	for state in arr:
+		if state.x == x and state.y == y and state.d == d:
+			return True
+	return False
+
+
+def find_state(arr, x, y, d):
+	for state in arr:
+		if state.x == x and state.y == y and state.d == d:
+			return state
+	assert(False)
+
+
 def main():
 
 	original, startx, starty, endx, endy = parser("16_input.txt")
@@ -70,24 +123,37 @@ def main():
 
 	grid = anti_dead_end(original, startx, starty, endx, endy)
 
-	# We should construct a set of nodes. Departing an x,y start in 2 different directions
-	# counts as 2 different nodes.
-
-	all_connections = dict()					# startx, starty, (dx, dy)  -->  endx, endy, (dx, dy), cost
-
-	# For each node-start we could also add as connections the cost of turning as a connection...
+	# ---
 
 	possible_states = all_possible_states(grid, startx, starty, endx, endy)
 
 	for state in possible_states:
-		all_connections[state] = get_connection(grid, possible_states, state[0], state[1], state[2])
+		state.set_connections(get_moves(grid, possible_states, state))
 
-	print(all_connections)
+	for state in possible_states:
+		print(str(state))
+
+	print(len(possible_states))
+
+	print(find_state(possible_states, 61, 9, DOWN))
 
 
+def get_moves(grid, possible_states, state):
 
+	# All possible next-states from the given state, including turning without moving.
+	# We are only interested in decision points as states.
 
-def get_connection(grid, possible_states, x, y, d):
+	x = state.x
+	y = state.y
+	d = state.d
+
+	ret = []
+
+	# Do the trivial cases - turning without moving.
+
+	ret += state.trivial_moves()
+
+	# Do the other thing - going forwards along a path, if possible.
 
 	cost = 0
 
@@ -95,7 +161,7 @@ def get_connection(grid, possible_states, x, y, d):
 	nexty = y + d[1]
 
 	if grid[nextx][nexty] != ".":
-		return None
+		return ret
 
 	while True:
 
@@ -107,8 +173,9 @@ def get_connection(grid, possible_states, x, y, d):
 
 		# Check if we reached a new node...
 
-		if (x, y, d) in possible_states:
-			return (x, y, d, cost)
+		if arr_has_state(possible_states, x, y, d):
+			ret.append(Move(x, y, d, cost))
+			return ret
 
 		# Is it OK to continue moving?
 
@@ -153,23 +220,23 @@ def all_possible_states(grid, startx, starty, endx, endy):
 				dirs_out = directions_out(grid, x, y)
 				if len(dirs_out) > 2:
 					for d in ALL_DIRECTIONS:
-						foo.append((x, y, d))
+						foo.append(State(x, y, d))
 
 	start_present = False
 	end_present = False
 	for state in foo:
-		if state[0] == startx and state[1] == starty:
+		if state.x == startx and state.y == starty:
 			start_present = True
-		if state[0] == endx and state[1] == endy:
+		if state.x == endx and state.y == endy:
 			end_present = True
 
 	assert(start_present == False and end_present == False)		# This will make life easier.
 
 	for d in ALL_DIRECTIONS:
-		foo.append((startx, starty, d))
+		foo.append(State(startx, starty, d))
 
 	for d in ALL_DIRECTIONS:
-		foo.append((endx, endy, d))
+		foo.append(State(endx, endy, d))
 
 	return foo
 
