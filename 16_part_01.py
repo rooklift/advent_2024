@@ -174,6 +174,14 @@ class State():
 
 # -------------------------------------------------------------------------------------------------
 
+def get_real_state(state_set, fake_state):
+
+	# Given some "fake_state" with correct x y d components, get a reference
+	# to the real state in the set. IS THERE A MORE PYTHONIC WAY???
+
+	return next(s for s in state_set if s == fake_state)
+
+
 def all_possible_states(grid, startx, starty, endx, endy):
 
 	# Returns all possible states the robot can be in, at the moment when it has to make decisions.
@@ -267,10 +275,10 @@ def anti_dead_end(original, startx, starty, endx, endy):
 
 def my_dijkstra(possible_states, start_fake, end_fake):			# Returns distance only
 
-	# Note that the "fake" objects are State objects but lacking the correct meta-info.
+	# Note that the "fake" objects are State objects with correct (x,y,d) but lacking the correct meta-info.
 
-	start = next(s for s in possible_states if s == start_fake)
-	end = next(s for s in possible_states if s == end_fake)
+	start = get_real_state(possible_states, start_fake)
+	end = get_real_state(possible_states, end_fake)
 
 	# Step 1:
 
@@ -303,7 +311,7 @@ def my_dijkstra(possible_states, start_fake, end_fake):			# Returns distance onl
 		for neighbour_tup, distance in current.connections.items():
 
 			neighbour_fake = State(neighbour_tup[0], neighbour_tup[1], neighbour_tup[2])
-			neighbour = next(s for s in possible_states if s == neighbour_fake)
+			neighbour = get_real_state(possible_states, neighbour_fake)
 
 			# Step 4.1:
 
@@ -354,7 +362,9 @@ def main():
 	end = State(endx, endy, UP)				# Empirically known to be the best way to end.
 
 	t = time.time()
-	print(my_dijkstra(possible_states, start, end))
+	result = my_dijkstra(possible_states, start, end)
 	print(f"Dijkstra took: {time.time() - t}")
+	print("----")
+	print(f"RESULT: {result}")
 
 main()
