@@ -25,7 +25,7 @@ class Computer():
 		self.program_string = ",".join([str(n) for n in program])
 
 
-	def reset_fast(self, a, b, c):		# Since program doesn't change.
+	def reset_fast(self, a, b, c):			# Since program doesn't change.
 		self.a = a
 		self.b = b
 		self.c = c
