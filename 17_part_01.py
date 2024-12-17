@@ -20,11 +20,15 @@ class Computer():
 
 
 	def reset(self, a, b, c, program):
+		self.reset_fast(a, b, c)
+		self.program = program
+		self.program_string = ",".join([str(n) for n in program])
+
+
+	def reset_fast(self, a, b, c):		# Since program doesn't change.
 		self.a = a
 		self.b = b
 		self.c = c
-		self.program = program
-		self.program_string = ",".join([str(n) for n in program])
 		self.i = 0
 		self.outputs = []
 
