@@ -77,8 +77,11 @@ func main() {
 	// We know the 16 digit outputs end at input 0o7777777777777777.
 	// Thus there are 0o7777777777777777 - 0o1000000000000000 = 0o6777777777777777 of them.
 	//
-	// Empirically we know our sequences of a given length end with 5,5,0,3,3,0 at a certain point...
-	// About 120228 / 229376 of the way through the sequence.
+	// Empirically we know our outputs of a given length end with 5,5,0,3,3,0 at a certain point...
+	// About 120228 / 229376 of the way through the set of those outputs.
+	//
+	// This was learned simply by examining all length-6 outputs - there are 229376 such outputs, and
+	// the correct ending shows up at position 120228 in those.
 	//
 	// We expect to find our sequence after ((120228 / 229376) * 0o6777777777777777) + 0o1000000000000000
 
