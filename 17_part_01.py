@@ -53,24 +53,24 @@ class Computer():
 
 		next_i = self.i + 2					# usually true
 
-		if opcode == 0:						# adv (division using combo)
+		if opcode == 0:						# adv (division using combo, save to A)
 			self.a = self.a // (2 ** self.interpret_combo(value))
-		elif opcode == 1:					# bxl (bitwise xor using literal)
+		elif opcode == 1:					# bxl (bitwise xor using literal, save to B)
 			self.b = self.b ^ value
-		elif opcode == 2:					# bst (combo modulo 8)
+		elif opcode == 2:					# bst (combo modulo 8, save to B)
 			self.b = self.interpret_combo(value) % 8
 		elif opcode == 3:					# jnz (conditional jump using literal)
 			if self.a == 0:
 				pass
 			else:
 				next_i = value
-		elif opcode == 4:					# bxc (bitwise xor of a^b, reads operand but ignores it)
+		elif opcode == 4:					# bxc (bitwise xor of a^b, save to B)
 			self.b = self.b ^ self.c
-		elif opcode == 5:					# out
+		elif opcode == 5:					# out (output combo modulo 8)
 			self.outputs.append(self.interpret_combo(value) % 8)
-		elif opcode == 6:					# bdv (like adv but storing to b)
+		elif opcode == 6:					# bdv (like adv but save to B)
 			self.b = self.a // (2 ** self.interpret_combo(value))
-		elif opcode == 7:					# cdv (like adv but storing to c)
+		elif opcode == 7:					# cdv (like adv but save to C)
 			self.c = self.a // (2 ** self.interpret_combo(value))
 
 		self.i = next_i
