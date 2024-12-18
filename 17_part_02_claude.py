@@ -99,7 +99,7 @@ def find_matching_sequences(start, end, target_suffix, program):
 	for a in range(start, end + 1):
 		computer.reset(a)
 		outputs = computer.run_program(program)
-		if len(outputs) >= len(target_suffix) and outputs[-len(target_suffix):] == target_suffix:
+		if outputs == target_suffix:
 			matching.append(a)
 	return matching
 
