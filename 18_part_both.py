@@ -38,10 +38,10 @@ def bfs(avoid):
 			if new_x < 0 or new_x >= WIDTH or new_y < 0 or new_y >= HEIGHT:
 				continue
 
-			if (new_x, new_y) in avoid:
+			if (new_x, new_y) in distances:
 				continue
 
-			if (new_x, new_y) in distances:
+			if (new_x, new_y) in avoid:
 				continue
 
 			if (new_x, new_y) == (TAR_X, TAR_Y):
