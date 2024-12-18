@@ -113,7 +113,6 @@ If input 8 gives [4,3]                        (a fifty-sixth of the 8-63 run)
 
 Since each depth has 8 times as many entries as the preceeding depth, we can just multiply
 indices by 8 to get the start of the corresponding thing. Add 7 to get the end of it.
-
 """
 
 def dfs(start, end, computer):
