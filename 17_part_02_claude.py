@@ -92,59 +92,49 @@ class Computer:
 			self.act(program[self.i], program[self.i + 1])
 		return self.outputs
 
-def find_matching_sequences(start, end, target_suffix, program):
-	"""Find all inputs in range that produce output sequences ending with target_suffix"""
+def find_matching_sequences(start, end, target_sequence, program):
+	"""Find all inputs in range that produce exactly target_sequence"""
 	computer = Computer()
 	matching = []
 	for a in range(start, end + 1):
 		computer.reset(a)
 		outputs = computer.run_program(program)
-		if outputs == target_suffix:
+		if outputs == target_sequence:
 			matching.append(a)
 	return matching
 
 def solve_program(program):
-	"""Build up solution by finding matching sequences of increasing length"""
-	target = program
-
+	"""Find smallest input A that makes the program output itself"""
 	length = 1
-	candidates = find_matching_sequences(1, 7, target[-1:], program)
-	print(f"Length {length}: {len(candidates)} candidates ending in {target[-1:]}")
+	candidates = find_matching_sequences(1, 7, program[-length:], program)
+	print(f"Length {length}: {len(candidates)} candidates matching {program[-length:]}")
 
-	while length < len(target):
+	while length < len(program):
 		length += 1
 		new_candidates = []
 
 		for prev in candidates:
 			start = prev << 3
 			end = start + 7
-			matches = find_matching_sequences(start, end, target[-length:], program)
+			matches = find_matching_sequences(start, end, program[-length:], program)
 			new_candidates.extend(matches)
 
 		candidates = new_candidates
-		print(f"Length {length}: {len(candidates)} candidates ending in {target[-length:]}")
+		print(f"Length {length}: {len(candidates)} candidates matching {program[-length:]}")
 
 		if not candidates:
 			return None
 
 	return candidates[0] if candidates else None
 
-# Test with the small program
+# Test programs
 small_program = [0,3,5,4,3,0]
+large_program = [2,4,1,1,7,5,1,5,4,2,5,5,0,3,3,0]
+
 print("\nTesting small program:", small_program)
 result = solve_program(small_program)
 print(f"Solution: {result}")
 
-if result:
-	computer = Computer(result)
-	print(f"Verification: {computer.run_program(small_program) == small_program}")
-
-# Test with the original large program
-large_program = [2,4,1,1,7,5,1,5,4,2,5,5,0,3,3,0]
 print("\nTesting large program:", large_program)
 result = solve_program(large_program)
 print(f"Solution: {result}")
-
-if result:
-	computer = Computer(result)
-	print(f"Verification: {computer.run_program(large_program) == large_program}")
