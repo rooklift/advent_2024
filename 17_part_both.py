@@ -93,9 +93,25 @@ class Computer():
 			raise ValueError
 
 
+def dfs(start, end, computer):
+	candidates = []
+	for n in range(start, end + 1):
+		computer.reset_fast(n, 0, 0)
+		output = computer.get_output()
+		if output == computer.program:
+			return n
+		if output == computer.program[-len(output):]:
+			candidates.append(n)
+	for n in candidates:
+		ret = dfs(n * 8, n * 8 + 7, computer)
+		if ret != None:
+			return ret
+
+
 def main():
 	computer = Computer(*parser("17_input.txt"))
 	print(computer.get_output_string())
+	print(dfs(1, 7, computer))
 
 
 main()
