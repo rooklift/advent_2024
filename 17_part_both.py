@@ -102,14 +102,18 @@ Input   -->   Output
 
 Etc.
 
-But the outputs at the preceeding depth predict the output of this depth, in the sense that
-the first seventh of the new inputs will end that way, e.g.
+But the outputs at each depth predict the output of the next depth, in the sense that inputs
+at the corresponding fraction of the next depth will end in the same way...
 
-If input 1 gives [3]:
-	then inputs 8-15 will end in [3].
+If input 1 gives [3]:						  (a seventh of the 1-7 run)
+	then inputs 8-15 will end in [3].         (a seventh of the 8-63 run)
 
-If input 8 gives [4,3]
-	then inputs 64-71 will end in [4,3].
+If input 8 gives [4,3]                        (a fifty-sixth of the 8-63 run)
+	then inputs 64-71 will end in [4,3].      (a fifty-sixth of the 64-511 run)
+
+Since each depth has 8 times as many entries as the preceeding depth, we can just multiply
+indices by 8 to get the start of the corresponding thing. Add 7 to get the end of it.
+
 """
 
 def dfs(start, end, computer):
