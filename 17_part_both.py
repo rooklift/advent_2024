@@ -92,6 +92,25 @@ class Computer():
 		if n == 7:
 			raise ValueError
 
+"""
+The key to part 2 is that the outputs have the following pattern
+
+Input   -->   Output
+1-7           length 1 output	(7 items)
+8-63		  length 2 output	(7 * 8 items)
+64-511		  length 3 output	(7 * 8 * 8 items)
+
+Etc.
+
+But the outputs at the preceeding depth predict the output of this depth, in the sense that
+the first seventh of the new inputs will end that way, e.g.
+
+If input 1 gives [3]:
+	then inputs 8-15 will end in [3].
+
+If input 8 gives [4,3]
+	then inputs 64-71 will end in [4,3].
+"""
 
 def dfs(start, end, computer):
 	candidates = []
