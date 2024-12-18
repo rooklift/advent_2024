@@ -10,7 +10,7 @@
 	8-63: 2 digit output
 	4-511: 3 digit output
 
-	etc etc, growing like this
+	etc etc, growing like this.
 
 	But I noticed that the ends of each output were predictable from the outputs of the shorter
 	sequences.
@@ -29,7 +29,7 @@
 	Knowing that this pattern exists, there should be some fast algorithm to solve this:
 
 	* Generate the numbers for input 1-7:
-	* Find what input or inputs give the right final digit
+	* Find what input or inputs give the right final digit.
 	* Now search only the correct part(s) of inputs 8-63 for the input or inputs that give the right
 	  final 2 digits.
 	* Now search only the correct part(s) of inputs 64-511...
