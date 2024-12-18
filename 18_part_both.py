@@ -28,7 +28,7 @@ def neighbours(x, y, avoid):
 		ret.append((x, y + 1))
 	return [item for item in ret if item not in avoid]
 
-def bfs(data):
+def bfs(avoid):
 	x = 0
 	y = 0
 
@@ -39,7 +39,7 @@ def bfs(data):
 
 		current = todo.popleft()
 
-		for neigh in neighbours(current[0], current[1], data):
+		for neigh in neighbours(current[0], current[1], avoid):
 
 			if neigh in distances:
 				continue
@@ -65,18 +65,18 @@ def main():
 
 	while True:
 		mid = (upper + lower) // 2
-		if bfs(data[:mid]) == None:
+		if bfs(set(data[:mid])) == None:
 			upper = mid
 		else:
 			lower = mid
-		if upper - lower < 10:
+		if upper - lower < 5:
 			break
 
 	# I hate thinking about edge cases, just terminate the binary search when
-	# there are < 10 items remaining and brute force all from there.
+	# there are < 5 items remaining and brute force all from there.
 
 	for n in range(lower, upper + 1):
-		if bfs(data[:n]) == None:
+		if bfs(set(data[:n])) == None:
 			x, y = data[n - 1]
 			print(f"{x},{y}")
 			break
