@@ -23,14 +23,17 @@ def bfs(avoid):
 	distances = dict(); distances[(0, 0)] = 0
 	todo = deque(); todo.append((0, 0))
 
-	while len(todo) > 0:
+	while True:
 
-		current = todo.popleft()
+		try:
+			x, y = todo.popleft()
+		except IndexError:
+			return None
 
 		for vec in VECTORS:
 
-			new_x = current[0] + vec[0]
-			new_y = current[1] + vec[1]
+			new_x = x + vec[0]
+			new_y = y + vec[1]
 
 			if new_x < 0 or new_x >= WIDTH or new_y < 0 or new_y >= HEIGHT:
 				continue
@@ -42,12 +45,11 @@ def bfs(avoid):
 				continue
 
 			if (new_x, new_y) == (TAR_X, TAR_Y):
-				return distances[current] + 1
+				return distances[(x, y)] + 1
 
-			distances[(new_x, new_y)] = distances[current] + 1
+			distances[(new_x, new_y)] = distances[(x, y)] + 1
 			todo.append((new_x, new_y))
 
-	return None
 
 def main():
 
