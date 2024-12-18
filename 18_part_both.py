@@ -13,8 +13,7 @@ def parser(filename):
 		lines = [line.strip() for line in infile.readlines() if line.strip() != ""]
 	ret = []
 	for line in lines:
-		x = int(line.split(",")[0])
-		y = int(line.split(",")[1])
+		x, y = [int(s) for s in line.split(",")]
 		ret.append((x, y))
 	return ret
 
