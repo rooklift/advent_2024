@@ -120,11 +120,10 @@ def dfs(start, end, computer):
 		if output == computer.program:
 			return n
 		if output == computer.program[-len(output):]:
-			candidates.append(n)
-	for n in candidates:
-		ret = dfs(n * 8, n * 8 + 7, computer)
-		if ret != None:
-			return ret
+			result = dfs(n * 8, n * 8 + 7, computer)
+			if result:
+				return result
+	return None
 
 
 def main():
