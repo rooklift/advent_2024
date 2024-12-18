@@ -113,7 +113,6 @@ If input 8 gives [4,3]
 """
 
 def dfs(start, end, computer):
-	candidates = []
 	for n in range(start, end + 1):
 		computer.reset_fast(n, 0, 0)
 		output = computer.get_output()
