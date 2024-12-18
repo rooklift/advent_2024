@@ -8,6 +8,7 @@ TAR_Y = 70
 
 VECTORS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 
+
 def parser(filename):
 	with open(filename) as infile:
 		lines = [line.strip() for line in infile.readlines() if line.strip() != ""]
@@ -16,6 +17,7 @@ def parser(filename):
 		x, y = [int(s) for s in line.split(",")]
 		ret.append((x, y))
 	return ret
+
 
 def bfs(avoid):
 
