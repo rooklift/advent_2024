@@ -6,6 +6,8 @@ HEIGHT = 71
 TAR_X = 70
 TAR_Y = 70
 
+VECTORS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+
 def parser(filename):
 	with open(filename) as infile:
 		lines = [line.strip() for line in infile.readlines() if line.strip() != ""]
@@ -16,39 +18,34 @@ def parser(filename):
 		ret.append((x, y))
 	return ret
 
-def neighbours(x, y, avoid):
-	ret = []
-	if x > 0:
-		ret.append((x - 1, y))
-	if x < WIDTH - 1:
-		ret.append((x + 1, y))
-	if y > 0:
-		ret.append((x, y - 1))
-	if y < HEIGHT - 1:
-		ret.append((x, y + 1))
-	return [item for item in ret if item not in avoid]
-
 def bfs(avoid):
-	x = 0
-	y = 0
 
-	distances = dict(); distances[(x, y)] = 0
-	todo = deque(); todo.append((x, y))
+	distances = dict(); distances[(0, 0)] = 0
+	todo = deque(); todo.append((0, 0))
 
 	while len(todo) > 0:
 
 		current = todo.popleft()
 
-		for neigh in neighbours(current[0], current[1], avoid):
+		for vec in VECTORS:
 
-			if neigh in distances:
+			new_x = current[0] + vec[0]
+			new_y = current[1] + vec[1]
+
+			if new_x < 0 or new_x >= WIDTH or new_y < 0 or new_y >= HEIGHT:
 				continue
 
-			if neigh == (TAR_X, TAR_Y):
+			if (new_x, new_y) in avoid:
+				continue
+
+			if (new_x, new_y) in distances:
+				continue
+
+			if (new_x, new_y) == (TAR_X, TAR_Y):
 				return distances[current] + 1
 
-			distances[neigh] = distances[current] + 1
-			todo.append(neigh)
+			distances[(new_x, new_y)] = distances[current] + 1
+			todo.append((new_x, new_y))
 
 	return None
 
