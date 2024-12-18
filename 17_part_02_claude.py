@@ -85,9 +85,8 @@ class Computer:
 
 		self.i = next_i
 
-	def run_program(self, program):
-		self.i = 0
-		self.outputs = []
+	def run_program(self, initial_a, program):
+		self.reset(initial_a)
 		while self.i < len(program) - 1:
 			self.act(program[self.i], program[self.i + 1])
 		return self.outputs
@@ -97,8 +96,7 @@ def find_matching_sequences(start, end, target_sequence, program):
 	computer = Computer()
 	matching = []
 	for a in range(start, end + 1):
-		computer.reset(a)
-		outputs = computer.run_program(program)
+		outputs = computer.run_program(a, program)
 		if outputs == target_sequence:
 			matching.append(a)
 	return matching
@@ -127,14 +125,24 @@ def solve_program(program):
 
 	return candidates[0] if candidates else None
 
-# Test programs
+# Test with the small program
 small_program = [0,3,5,4,3,0]
-large_program = [2,4,1,1,7,5,1,5,4,2,5,5,0,3,3,0]
-
 print("\nTesting small program:", small_program)
 result = solve_program(small_program)
 print(f"Solution: {result}")
 
+if result:
+    computer = Computer()
+    outputs = computer.run_program(result, small_program)
+    print(f"Verification: {outputs == small_program}")
+
+# Test with the large program
+large_program = [2,4,1,1,7,5,1,5,4,2,5,5,0,3,3,0]
 print("\nTesting large program:", large_program)
 result = solve_program(large_program)
 print(f"Solution: {result}")
+
+if result:
+    computer = Computer()
+    outputs = computer.run_program(result, large_program)
+    print(f"Verification: {outputs == large_program}")
