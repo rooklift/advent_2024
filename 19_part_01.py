@@ -17,15 +17,12 @@ def main():
 
 
 def can_build(tokens, target):
-
 	if len(target) == 0:
 		return True
-
 	for token in tokens:
 		if target.startswith(token):
 			if can_build(tokens, target[len(token):]):
 				return True
-
 	return False
 
 
