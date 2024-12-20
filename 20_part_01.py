@@ -38,7 +38,7 @@ def saving(grid, distances, x, y):			# How much is saved by making this cut.
 		return 0
 
 	if len(links) > 2:
-		return 0				# Not quite true, but for this exact puzzle, these cases are irrelevant.
+		return 2				# Might not be true generally, but correct for this exact puzzle.
 
 	return abs(distances[links[0]] - distances[links[1]]) - 2
 
