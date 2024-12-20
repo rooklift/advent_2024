@@ -26,7 +26,7 @@ def parser(filename):
 	return grid, startx, starty, endx, endy
 
 
-def saving(grid, distances, x, y):			# How much is saved by making this cut.
+def saving(grid, distances, x, y):			# How much is saved by deleting this wall.
 
 	links = []
 
