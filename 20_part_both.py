@@ -1,3 +1,5 @@
+MIN_CHEAT = 100
+
 def parser(filename):
 	with open(filename) as infile:
 		lines = [line.strip() for line in infile.readlines() if line.strip() != ""]
@@ -26,15 +28,15 @@ def parser(filename):
 	return grid, startx, starty, endx, endy
 
 
-def good_cheat_count(grid, distances, x, y):
+def good_cheat_count(grid, distances, x, y, cheat_time):
 
 	width = len(grid)
 	height = len(grid[0])
 
 	ret = 0
 
-	for max_dx in range(20 + 1):
-		dy = 20 - max_dx
+	for max_dx in range(cheat_time + 1):
+		dy = cheat_time - max_dx
 		for i in range(-max_dx, max_dx + 1):
 			if x + i < 0 or x + i >= width:
 				continue
@@ -43,18 +45,13 @@ def good_cheat_count(grid, distances, x, y):
 					continue
 				if grid[x + i][y + j] == ".":
 					saving = distances[(x, y)] - distances[(x + i, y + j)] - abs(i) - abs(j)
-					if saving >= 100:
+					if saving >= MIN_CHEAT:
 						ret += 1
 
 	return ret
 
 
-def main():
-
-	grid, startx, starty, endx, endy = parser("20_input.txt")
-
-	width = len(grid)
-	height = len(grid[0])
+def get_distances(grid, startx, starty, endx, endy):
 
 	distances = dict()
 	distances[(startx, starty)] = 0
@@ -72,15 +69,29 @@ def main():
 			y = y + vec[1]
 			break
 
-	good_cheats = 0
+	return distances
+
+
+def main():
+
+	grid, startx, starty, endx, endy = parser("20_input.txt")
+	distances = get_distances(grid, startx, starty, endx, endy)
+
+	width = len(grid)
+	height = len(grid[0])
+
+	p1 = 0
+	p2 = 0
 
 	for x in range(1, width - 1):
 		for y in range(1, height - 1):
-			if grid[x][y] != ".":			# The opposite way from Part 1.
+			if grid[x][y] != ".":
 				continue
-			good_cheats += good_cheat_count(grid, distances, x, y)
+			p1 += good_cheat_count(grid, distances, x, y, 2)
+			p2 += good_cheat_count(grid, distances, x, y, 20)
 
-	print(good_cheats)
+	print(p1)
+	print(p2)
 
 
 main()
