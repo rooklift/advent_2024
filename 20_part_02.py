@@ -62,7 +62,6 @@ def main():
 	x, y = startx, starty
 
 	while x != endx or y != endy:
-		print(x, y)
 		for vec in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
 			if grid[x + vec[0]][y + vec[1]] != ".":
 				continue
