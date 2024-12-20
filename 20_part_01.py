@@ -56,8 +56,7 @@ def main():
 
 	x, y = startx, starty
 
-	while True:
-		found_next = False
+	while x != endx or y != endy:
 		for vec in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
 			if grid[x + vec[0]][y + vec[1]] != ".":
 				continue
@@ -66,9 +65,6 @@ def main():
 			distances[(x + vec[0], y + vec[1])] = distances[(x, y)] + 1
 			x = x + vec[0]
 			y = y + vec[1]
-			found_next = True
-			break
-		if not found_next:
 			break
 
 	good_cheats = 0
