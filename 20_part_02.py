@@ -26,11 +26,7 @@ def parser(filename):
 	return grid, startx, starty, endx, endy
 
 
-def good_cheat_count(grid, distances, x, y, debug_totals):
-
-	print(x, y)
-
-	visited = set()
+def good_cheat_count(grid, distances, x, y):
 
 	width = len(grid)
 	height = len(grid[0])
@@ -38,34 +34,16 @@ def good_cheat_count(grid, distances, x, y, debug_totals):
 	ret = 0
 
 	for max_dx in range(20 + 1):
-		max_dy = 20 - max_dx
-
+		dy = 20 - max_dx
 		for i in range(-max_dx, max_dx + 1):
-
 			if x + i < 0 or x + i >= width:
 				continue
-
-			for j in range(-max_dy, max_dy + 1):
-
+			for j in ([dy] if dy == 0 else [-dy, dy]):
 				if y + j < 0 or y + j >= height:
 					continue
-
-				if (x + i, y + j) in visited:
-					continue
-
-				visited.add((x + i, y + j))
-
 				if grid[x + i][y + j] == ".":
-
 					saving = distances[(x, y)] - distances[(x + i, y + j)] - abs(i) - abs(j)
-
 					if saving >= 100:
-
-						if saving in debug_totals:
-							debug_totals[saving] += 1
-						else:
-							debug_totals[saving] = 1
-
 						ret += 1
 
 	return ret
@@ -79,7 +57,6 @@ def main():
 	height = len(grid[0])
 
 	distances = dict()
-
 	distances[(startx, starty)] = 0
 
 	x, y = startx, starty
@@ -98,15 +75,12 @@ def main():
 
 	good_cheats = 0
 
-	debug_totals = dict()
-
 	for x in range(1, width - 1):
 		for y in range(1, height - 1):
-			if grid[x][y] != ".":			# The opposite way from part 1.
+			if grid[x][y] != ".":			# The opposite way from Part 1.
 				continue
-			good_cheats += good_cheat_count(grid, distances, x, y, debug_totals)
+			good_cheats += good_cheat_count(grid, distances, x, y)
 
-	print()
 	print(good_cheats)
 
 
