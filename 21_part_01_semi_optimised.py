@@ -75,6 +75,8 @@ def next_moves(kp_dict, c1, c2):							# Given our position at c1, return 1 or 2
 
 def action_sequences(kp_dict, c1, c2, last_move = None):	# Given our position at c1, return all sane sequences to go to c2, AND PUSH IT.
 
+	# Optimised by just picking 1 case for all the small keypad possibilities...
+
 	if len(kp_dict) == 6:
 
 		if c1 == "A":
@@ -85,7 +87,7 @@ def action_sequences(kp_dict, c1, c2, last_move = None):	# Given our position at
 			if c2 == ">":
 				return [["v", "A"]]
 			if c2 == "v":
-				return [["v", "<", "A"]]
+				return [["v", "<", "A"]]			# or consider other option??
 			if c2 == "<":
 				return [["v", "<", "<", "A"]]
 
@@ -150,11 +152,19 @@ def action_sequences(kp_dict, c1, c2, last_move = None):	# Given our position at
 		next_c = next_position(kp_dict, c1, move)
 		for foo in action_sequences(kp_dict, next_c, c2, move):
 			ret.append([move] + foo)
-	return ret
+
+	# Optimise by returning only 1... horrible hack empirically determined.
+
+	if c1 == "A" and c2 == "5":
+		return [ret[0]]
+	elif c1 == "8" and c2 == "A":
+		return [ret[1]]
+	else:
+		return [ret[0]]
 
 
-def full_sequences(kp_dict, c1, buttons):					# Given buttons, with arm at c1, return all sane sequences to press them.
-	curr_c = c1
+def full_sequences(kp_dict, buttons):					# Given buttons, with arm at "A", return all sane sequences to press them.
+	curr_c = "A"
 	next_c = buttons[0]
 	ret = action_sequences(kp_dict, curr_c, next_c)
 	for button in buttons[1:]:
@@ -175,11 +185,11 @@ def score(s, push_count):									# Score for code s given how many buttons the 
 
 def solve_code(big_kp_dict, small_kp_dict, code, intermediate_robots):
 	result = 0
-	seqs = full_sequences(big_kp_dict, "A", code)
+	seqs = full_sequences(big_kp_dict, code)
 	for n in range(intermediate_robots):
 		next_level = []
 		for seq in seqs:
-			next_level += full_sequences(small_kp_dict, "A", seq)
+			next_level += full_sequences(small_kp_dict, seq)
 		seqs = next_level
 	min_buttons = None
 	for seq in seqs:
@@ -194,9 +204,9 @@ def main():
 	small_kp_dict = make_keypad_dict(small_lines)
 	result = 0
 	for code in codes:
-		print(code, end="")
+		print(code)
 		score = solve_code(big_kp_dict, small_kp_dict, code, 2)
-		print(":", score)
+		print("-->", score)
 		result += score
 	print(result)
 
