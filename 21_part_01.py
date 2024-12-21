@@ -78,7 +78,8 @@ def next_moves(kp_dict, c1, c2):		# Given our position at c1, return all sane ne
 
 
 def action_sequences(kp_dict, c1, c2):		# Given our position at c1, return all sane sequences to go to c2, AND PUSH IT.
-
+											# This could be optimised to not change direction, i.e. up up left left is OK,
+											# up left up left is not.
 	if c1 == c2:
 		return [["A"]]
 
@@ -118,6 +119,10 @@ def full_sequences(kp_dict, c1, buttons):		# Given buttons, with arm at c1, retu
 	return ret
 
 
+def score(s, push_count):
+	return int(s[0:3]) * push_count
+
+
 def main():
 
 	codes = parser("21_input.txt")
@@ -125,8 +130,37 @@ def main():
 	big = make_keypad_dict(big_lines)
 	small = make_keypad_dict(small_lines)
 
-	for foo in full_sequences(big, "A", "029A"):
-		print("".join(foo))
+	result = 0
+
+	for code in codes:
+
+		print(code)
+
+		robot_1_seqs = full_sequences(big, "A", code)
+
+		robot_2_seqs = []
+
+		for r1seq in robot_1_seqs:
+			robot_2_seqs += full_sequences(small, "A", r1seq)
+
+		robot_3_seqs = []
+
+		for r2seq in robot_2_seqs:
+			robot_3_seqs += full_sequences(small, "A", r2seq)
+
+		min_buttons = None
+
+		for seq in robot_3_seqs:
+			if min_buttons == None or len(seq) < min_buttons:
+				min_buttons = len(seq)
+
+		result += score(code, min_buttons)
+
+	print(result)
+
+
+
+
 
 
 
