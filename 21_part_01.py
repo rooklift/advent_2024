@@ -95,15 +95,27 @@ def action_sequences(kp_dict, c1, c2):		# Given our position at c1, return all s
 	return ret
 
 
-def full_sequences(kp_dict, c1, keypresses):		# Given keypresses, with arm at c1, return all sane sequences to press them.
+def full_sequences(kp_dict, c1, buttons):		# Given buttons, with arm at c1, return all sane sequences to press them.
 
 	curr_c = c1
+	next_c = buttons[0]
 
+	ret = action_sequences(kp_dict, curr_c, next_c)
 
+	for button in buttons[1:]:
+		curr_c = next_c
+		next_c = button
+		additional = action_sequences(kp_dict, curr_c, next_c)
 
+		new_ret = []
 
+		for add in additional:
+			for partial in ret:
+				new_ret.append(partial + add)
 
+		ret = new_ret
 
+	return ret
 
 
 def main():
@@ -113,7 +125,8 @@ def main():
 	big = make_keypad_dict(big_lines)
 	small = make_keypad_dict(small_lines)
 
-	print(action_sequences(big, "A", "7"))
+	for foo in full_sequences(big, "A", "029A"):
+		print("".join(foo))
 
 
 
