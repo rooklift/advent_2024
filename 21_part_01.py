@@ -2,75 +2,118 @@ def parser(filename):
 	with open(filename) as infile:
 		return [line.strip() for line in infile.readlines() if line.strip() != ""]
 
-big = [				# Note that these arrays have [y][x] format - but we convert them in make_keypad_grid()
+big_lines = [		# Note that these arrays have [y][x] format - but we convert them in make_keypad_grid()
 	"789",
 	"456",
 	"123",
 	".0A",
 ]
 
-small = [
+small_lines = [
 	".^A",
 	"<v>",
 ]
 
 
-def make_keypad_grid(lines):
-	grid = [[], [], []]
-	for line in lines:
+def make_keypad_dict(lines):			# Locations of everything
+	ret = dict()
+	for y, line in enumerate(lines):
 		for x, c in enumerate(line):
-			grid[x].append(c)
-	return grid
+			ret[c] = (x, y)
+	return ret
 
 
-def make_grid_lookup(grid):
+vectors = {
+	">":	(1, 0),
+	"<":	(-1, 0),
+	"^":	(0, -1),
+	"v":	(0, 1),
+}
 
-	ret = dict()	# startc --> endc --> cost to move AND push (i.e. Manhat dist + 1)
 
-	width = len(grid)
-	height = len(grid[0])
+def next_position(kp_dict, c, move):		# Given our position at c and a movement, what char are we at next?
 
-	for x in range(width):
-		for y in range(height):
-			startc = grid[x][y]
-			if startc == ".":
-				continue
-			for i in range(width):
-				for j in range(height):
-					endc = grid[i][j]
-					if endc == ".":
-						continue
-					if startc not in ret:
-						ret[startc] = dict()
-					ret[startc][endc] = abs(x - i) + abs(y - j) + 1
+	assert(move in "><^v")
+
+	x, y = kp_dict[c]
+
+	x += vectors[move][0]
+	y += vectors[move][1]
+
+	for key in kp_dict:
+		if kp_dict[key] == (x, y):
+			return key
+
+	raise AssertionError
+
+
+def next_moves(kp_dict, c1, c2):		# Given our position at c1, return all sane next moves if we want to push c2
+
+	assert(c1 != c2)
+
+	x1, y1 = kp_dict[c1]
+	x2, y2 = kp_dict[c2]
+
+	dx = x2 - x1
+	dy = y2 - y1
+
+	ret = []
+	poss = []
+
+	if dx > 0:
+		poss.append(">")
+	if dx < 0:
+		poss.append("<")
+	if dy > 0:
+		poss.append("v")
+	if dy < 0:
+		poss.append("^")
+
+	for move in poss:
+		next_c = next_position(kp_dict, c1, move)
+		if next_c != ".":
+			ret.append(move)
 
 	return ret
 
 
-def total_cost(lookup, sequence):
-	ret = 0
-	current_pos = "A"
-	for c in sequence:
-		ret += lookup[current_pos][c]
-		current_pos = c
+def action_sequences(kp_dict, c1, c2):		# Given our position at c1, return all sane sequences to go to c2, AND PUSH IT.
+
+	if c1 == c2:
+		return [["A"]]
+
+	all_next = next_moves(kp_dict, c1, c2)
+
+	ret = []
+
+	for move in all_next:
+		next_c = next_position(kp_dict, c1, move)
+
+		for foo in action_sequences(kp_dict, next_c, c2):
+			ret.append([move] + foo)
+
 	return ret
+
+
+def full_sequences(kp_dict, c1, keypresses):		# Given keypresses, with arm at c1, return all sane sequences to press them.
+
+	curr_c = c1
+
+
+
+
+
+
 
 
 def main():
 
 	codes = parser("21_input.txt")
 
-	big_grid = make_keypad_grid(big)
-	small_grid = make_keypad_grid(small)
+	big = make_keypad_dict(big_lines)
+	small = make_keypad_dict(small_lines)
 
-	big_lookup = make_grid_lookup(big_grid)
-	small_lookup = make_grid_lookup(small_grid)
-
-	# But I'm not sure all of this is even useful.
-
-	# The exact route of the robot arm matters very much since it impacts
-	# the costs at the levels above it.
-
+	print(action_sequences(big, "A", "7"))
 
 
 
