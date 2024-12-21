@@ -1,0 +1,221 @@
+def parser(filename):
+	with open(filename) as infile:
+		return [line.strip() for line in infile.readlines() if line.strip() != ""]
+
+big_lines = [												# These arrays have [y][x] format - convert them in make_keypad_grid()
+	"789",
+	"456",
+	"123",
+	".0A",
+]
+
+small_lines = [
+	".^A",
+	"<v>",
+]
+
+
+def make_keypad_dict(lines):								# Dict: c --> (x, y)
+	ret = dict()
+	for y, line in enumerate(lines):
+		for x, c in enumerate(line):
+			ret[c] = (x, y)
+	return ret
+
+
+vectors = {
+	">":	(1, 0),
+	"<":	(-1, 0),
+	"^":	(0, -1),
+	"v":	(0, 1),
+}
+
+
+def next_position(kp_dict, c, move):						# Given our position at c and a movement in "<>^v", what char are we at next?
+	assert(move in "<>^v")
+	x, y = kp_dict[c]
+	dx, dy = vectors[move]
+	x += dx
+	y += dy
+	for key in kp_dict:
+		if kp_dict[key] == (x, y):
+			return key
+	raise AssertionError
+
+
+def next_moves(kp_dict, c1, c2, last_move = None):					# Given our position at c1, return 1 or 2 possible next moves if we want to push c2.
+	assert(c1 != c2)
+	x1, y1 = kp_dict[c1]
+	x2, y2 = kp_dict[c2]
+	ret = []
+	poss = []
+	if x1 < x2:
+		poss.append(">")
+	if x2 < x1:
+		poss.append("<")
+	if y1 < y2:
+		poss.append("v")
+	if y2 < y1:
+		poss.append("^")
+	for move in poss:
+		next_c = next_position(kp_dict, c1, move)
+		if next_c == ".":
+			continue
+		# Hard code avoiding some stupid moves:
+		# if c1 in ["7", "4"] and c2 in ["0", "A"] and move == "v":			# (Our actual input doesn't contain these cases.)
+		#	continue
+		if c1 == "A" and c2 in ["7", "4", "1"] and move == "<":
+			continue
+		if c1 == "A" and c2 == "<" and move == "<":
+			continue
+		ret.append(move)
+
+	if last_move in ret:
+		return [last_move]
+
+	return ret
+
+
+def action_sequence(kp_dict, c1, c2, last_move = None):	# Given our position at c1, return best sequence to go to c2, AND PUSH IT.
+
+	if len(kp_dict) == 6:
+
+		if c1 == "A":
+			if c2 == "A":
+				return ["A"]
+			if c2 == "^":
+				return ["<", "A"]
+			if c2 == ">":
+				return ["v", "A"]
+			if c2 == "v":
+				return ["v", "<", "A"]			# or consider other option??
+			if c2 == "<":
+				return ["v", "<", "<", "A"]
+
+		if c1 == "^":
+			if c2 == "A":
+				return [">", "A"]
+			if c2 == "^":
+				return ["A"]
+			if c2 == ">":
+				return ["v", ">", "A"]			# or consider other option??
+			if c2 == "v":
+				return ["v", "A"]
+			if c2 == "<":
+				return ["v", "<", "A"]
+
+		if c1 == ">":
+			if c2 == "A":
+				return ["^", "A"]
+			if c2 == "^":
+				return ["^", "<", "A"]			# or consider other option??
+			if c2 == ">":
+				return ["A"]
+			if c2 == "v":
+				return ["<", "A"]
+			if c2 == "<":
+				return ["<", "<", "A"]
+
+		if c1 == "v":
+			if c2 == "A":
+				return [">", "^", "A"]			# or consider other option??
+			if c2 == "^":
+				return ["^", "A"]
+			if c2 == ">":
+				return [">", "A"]
+			if c2 == "v":
+				return ["A"]
+			if c2 == "<":
+				return ["<", "A"]
+
+		if c1 == "<":
+			if c2 == "A":
+				return [">", ">", "^", "A"]
+			if c2 == "^":
+				return [">", "^", "A"]
+			if c2 == ">":
+				return [">", ">", "A"]
+			if c2 == "v":
+				return [">", "A"]
+			if c2 == "<":
+				return ["A"]
+
+	try:
+		assert(len(kp_dict) == 12)
+	except:
+		print(c1, c2)
+		raise
+
+	if c1 == c2:
+		return ["A"]
+
+	all_next = next_moves(kp_dict, c1, c2, last_move)
+	if last_move in all_next:
+		all_next = [last_move]
+	ret = []
+	for move in all_next:
+		next_c = next_position(kp_dict, c1, move)
+		ret.append([move] + action_sequence(kp_dict, next_c, c2, move))
+		print(ret)
+
+	# Optimise by returning only 1... horrible hack empirically determined.
+
+	if c1 == "8" and c2 == "A":
+		return ret[1]
+	else:
+		return ret[0]
+
+
+def full_sequences(kp_dict, buttons):					# Given buttons, with arm at "A", return all sane sequences to press them.
+	curr_c = "A"
+	next_c = buttons[0]
+	ret = action_sequence(kp_dict, curr_c, next_c)
+	for button in buttons[1:]:
+		curr_c = next_c
+		next_c = button
+		ret += action_sequence(kp_dict, curr_c, next_c)
+	return ret
+
+
+def score(s, push_count):									# Score for code s given how many buttons the human presses.
+	return int(s[0:3]) * push_count
+
+
+def solve_code(big_kp_dict, small_kp_dict, code, intermediate_robots):
+	result = 0
+	seqs = full_sequences(big_kp_dict, code)
+	for n in range(intermediate_robots):
+		next_level = []
+		for seq in seqs:
+			next_level += full_sequences(small_kp_dict, seq)
+		seqs = next_level
+	min_buttons = None
+	for seq in seqs:
+		if min_buttons == None or len(seq) < min_buttons:
+			min_buttons = len(seq)
+	return score(code, min_buttons)
+
+
+def main():
+	codes = parser("21_input.txt")
+	big_kp_dict = make_keypad_dict(big_lines)
+	small_kp_dict = make_keypad_dict(small_lines)
+	result = 0
+	for code in codes:
+		print(code)
+		score = solve_code(big_kp_dict, small_kp_dict, code, 2)
+		print("-->", score)
+		result += score
+	print(result)
+
+
+# I suspect the secret of Part 2 involves some combination of caching
+# and exploiting the fact that the robots are ending at A whenever
+# they are causing the robot above them to push any button.
+#
+# We should maybe just work out optimal pushes for the small pad
+# for each possible movement of the pad above it? Store such in
+# a dictionary and just build up the chain for the human?
+
+
+main()
