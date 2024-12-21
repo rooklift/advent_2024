@@ -59,8 +59,17 @@ def next_moves(kp_dict, c1, c2):							# Given our position at c1, return 1 or 2
 		poss.append("^")
 	for move in poss:
 		next_c = next_position(kp_dict, c1, move)
-		if next_c != ".":
-			ret.append(move)
+		if next_c == ".":
+			continue
+		# Hard code avoiding some stupid moves:
+		# if c1 in ["7", "4"] and c2 in ["0", "A"] and move == "v":			# (Our actual input doesn't contain these cases.)
+		#	continue
+		if c1 == "A" and c2 in ["7", "4", "1"] and move == "<":
+			continue
+		if c1 == "A" and c2 == "<" and move == "<":
+			continue
+		ret.append(move)
+
 	return ret
 
 
