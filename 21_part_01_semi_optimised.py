@@ -195,7 +195,7 @@ def main():
 	result = 0
 	for code in codes:
 		print(code, end="")
-		score = solve_code(big_kp_dict, small_kp_dict, code, 25)
+		score = solve_code(big_kp_dict, small_kp_dict, code, 2)
 		print(":", score)
 		result += score
 	print(result)
