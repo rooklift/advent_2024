@@ -133,4 +133,9 @@ def main():
 	print(result)
 
 
+# I suspect the secret of Part 2 involves some combination of caching
+# and exploiting the fact that the robots are ending at A whenever
+# they are causing the robot above them to push any button.
+
+
 main()
