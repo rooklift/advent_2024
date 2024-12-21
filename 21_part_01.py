@@ -136,6 +136,9 @@ def main():
 # I suspect the secret of Part 2 involves some combination of caching
 # and exploiting the fact that the robots are ending at A whenever
 # they are causing the robot above them to push any button.
+#
+# We should maybe just work out optimal pushes for the small pad
+# for each possible movement of the pad above it?
 
 
 main()
