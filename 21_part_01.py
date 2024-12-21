@@ -138,7 +138,8 @@ def main():
 # they are causing the robot above them to push any button.
 #
 # We should maybe just work out optimal pushes for the small pad
-# for each possible movement of the pad above it?
+# for each possible movement of the pad above it? Store such in
+# a dictionary and just build up the chain for the human?
 
 
 main()
