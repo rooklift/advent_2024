@@ -77,20 +77,24 @@ def next_moves(kp_dict, c1, c2):		# Given our position at c1, return all sane ne
 	return ret
 
 
-def action_sequences(kp_dict, c1, c2):		# Given our position at c1, return all sane sequences to go to c2, AND PUSH IT.
-											# This could be optimised to not change direction, i.e. up up left left is OK,
-											# up left up left is not.
+def action_sequences(kp_dict, c1, c2, last_move = None):
+
+	# last_move ensures we don't turn without cause. e.g. [left left up up] is OK, [left up left up] is not.
+
 	if c1 == c2:
 		return [["A"]]
 
 	all_next = next_moves(kp_dict, c1, c2)
+
+	if last_move in all_next:
+		all_next = [last_move]
 
 	ret = []
 
 	for move in all_next:
 		next_c = next_position(kp_dict, c1, move)
 
-		for foo in action_sequences(kp_dict, next_c, c2):
+		for foo in action_sequences(kp_dict, next_c, c2, move):
 			ret.append([move] + foo)
 
 	return ret
