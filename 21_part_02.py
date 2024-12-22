@@ -68,34 +68,33 @@ def parser(filename):
 		return [line.strip() for line in infile.readlines() if line.strip() != ""]
 
 def main():
-	codes = parser("21_input.txt")
-	result = 0
+	codes = parser("21_paulson.txt")						# p1: 224326 , p2: 279638326609472
+	p1 = 0
+	p2 = 0
 	for code in codes:
-		result += solve(code, 25)
-	print(result)
+		p1 += solve(code, 2)
+		p2 += solve(code, 25)
+	print(p1)
+	print(p2)
 
 def solve(code, intermediate_robot_count):
+
 	top_level_possibles = full_sequences(True, code)        # ['<^^^A<A>>AvvvA', '^^^<A<A>>AvvvA']
-	print(code, top_level_possibles)
 
 	possible_dicts = []
 
 	for poss in top_level_possibles:
 		possible_dicts.append(count_components(poss))
 
-	d = possible_dicts[0]								# FIXME!
+	best = None
 
-	if code == "508A":
-		d = possible_dicts[2]							# SUPER CRUDE HACK
+	for d in possible_dicts:
+		for n in range(intermediate_robot_count):
+			d = next_level_dict(d)
+		if best == None or dict_direct_score(d) < best:
+			best = dict_direct_score(d)
 
-	print(d)
-
-	for n in range(intermediate_robot_count):
-		d = next_level_dict(d)
-
-	print(d)
-
-	return dict_direct_score(d) * int(code[0:3])
+	return best * int(code[0:3])
 
 
 def count_components(seq):								# "<^^^A<A>>AvvvA" --> {"<^^^A": 1, "<A": 1, ">>A": 1, "vvvA": 1}
