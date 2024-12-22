@@ -71,7 +71,7 @@ def main():
 	codes = parser("21_input.txt")
 	result = 0
 	for code in codes:
-		result += solve(code, 2)
+		result += solve(code, 25)
 	print(result)
 
 def solve(code, intermediate_robot_count):
@@ -84,6 +84,7 @@ def solve(code, intermediate_robot_count):
 		possible_dicts.append(count_components(poss))
 
 	d = possible_dicts[0]								# FIXME!
+
 	if code == "508A":
 		d = possible_dicts[2]							# SUPER CRUDE HACK
 
