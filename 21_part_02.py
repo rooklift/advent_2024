@@ -27,7 +27,7 @@
 #
 # --------------------- UPDATE -----------------------------------------
 #
-# So this works for 2 intermediate robots (part 1)
+# So this works for 2 intermediate robots (part 1) but not 25 (part 2).
 
 import functools
 
