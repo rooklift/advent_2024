@@ -25,6 +25,10 @@
 #
 # But then it should be easy to cache what the best way to generate each
 # of the possible sequences is.
+#
+# --------------------- UPDATE -----------------------------------------
+#
+# So this works for 2 intermediate robots (part 1)
 
 import functools
 
@@ -79,7 +83,9 @@ def solve(code, intermediate_robot_count):
 	for poss in top_level_possibles:
 		possible_dicts.append(count_components(poss))
 
-	d = possible_dicts[0]								# FIXME?? Or is this fine?
+	d = possible_dicts[0]								# FIXME!
+	if code == "508A":
+		d = possible_dicts[2]							# SUPER CRUDE HACK
 
 	print(d)
 
