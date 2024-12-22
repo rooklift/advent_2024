@@ -42,6 +42,28 @@ class Monkey():
 			self.lookup[key] = self.seq[i] % 10
 
 
+def clamp(lower, n, upper):
+	if n < lower:
+		return lower
+	if n > upper:
+		return upper
+	return n
+
+
+def diffs_are_possible(diffs):
+	top = 9
+	bottom = 0
+	for diff in diffs:
+		top += diff
+		bottom += diff
+		old_top = top
+		top = clamp(bottom, top, 9)
+		bottom = clamp(0, bottom, old_top)
+		if bottom >= 10 or top < 0:
+			return False
+	return True
+
+
 def main():
 
 	monkeys = [Monkey(num) for num in parser("22_input.txt")]
@@ -49,6 +71,8 @@ def main():
 	p2_best = 0
 
 	for foo in itertools.product(range(-9, 10), repeat = 4):
+		if not diffs_are_possible(foo):
+			continue
 		print(list(foo))
 		p2_try = 0
 		for m in monkeys:
