@@ -67,8 +67,8 @@ def parser(filename):
 		return [line.strip() for line in infile.readlines() if line.strip() != ""]
 
 def main():
-	input_filename = "21_paulson.txt"
-	codes = parser(input_filename)							# p1: 224326 , p2: 279638326609472
+	input_filename = "21_paulson.txt"						# p1: 224326 , p2: 279638326609472
+	codes = parser(input_filename)
 	p1 = 0
 	p2 = 0
 	for code in codes:
