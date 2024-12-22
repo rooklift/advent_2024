@@ -61,11 +61,15 @@ def main():
 	monkeys = [Monkey(num) for num in parser("22_input.txt")]
 
 	p2_best = 0
+	p2_s = None
+	i = 0
 
 	for foo in itertools.product(range(-9, 10), repeat = 4):
+		i += 1
 		if not diffs_are_possible(foo):
 			continue
-		print(foo)
+		if p2_s:
+			print(f"\r({foo[0]:2}, {foo[1]:2}, {foo[2]:2}, {foo[3]:2}) best ({p2_s[0]:2}, {p2_s[1]:2}, {p2_s[2]:2}, {p2_s[3]:2}) ({p2_best})", end = "")
 		p2_try = 0
 		for m in monkeys:
 			try:
@@ -74,7 +78,9 @@ def main():
 				pass
 		if p2_try > p2_best:
 			p2_best = p2_try
+			p2_s = foo
 
+	print()
 	print(p2_best)
 
 
