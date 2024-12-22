@@ -75,6 +75,7 @@ def main():
 		p2 += solve(code, 25)
 	print(p1)
 	print(p2)
+	print("Remember to check which input file is being used!")
 
 def solve(code, intermediate_robot_count):
 
