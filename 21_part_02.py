@@ -1,7 +1,6 @@
 # OK, basic idea:
 #
 # For each level, have an object storing:
-# - The keys that are actually pressed e.g. 029A at top level.
 # - The sequences that need to be pressed by the robot below.
 #
 # e.g. to move to push   0: <A
