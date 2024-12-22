@@ -67,7 +67,8 @@ def parser(filename):
 		return [line.strip() for line in infile.readlines() if line.strip() != ""]
 
 def main():
-	codes = parser("21_paulson.txt")						# p1: 224326 , p2: 279638326609472
+	input_filename = "21_paulson.txt"
+	codes = parser(input_filename)							# p1: 224326 , p2: 279638326609472
 	p1 = 0
 	p2 = 0
 	for code in codes:
@@ -75,7 +76,7 @@ def main():
 		p2 += solve(code, 25)
 	print(p1)
 	print(p2)
-	print("Remember to check which input file is being used!")
+	print(f"Input file was: {input_filename}")
 
 def solve(code, intermediate_robot_count):
 
