@@ -1,10 +1,7 @@
-import functools
-
 def parser(filename):
 	with open(filename) as infile:
 		return [int(s) for s in infile.readlines() if s.strip() != ""]
 
-@functools.cache
 def iterate(n):
 	n ^= n * 64
 	n %= 16777216
