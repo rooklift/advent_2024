@@ -42,23 +42,15 @@ class Monkey():
 			self.lookup[key] = self.seq[i] % 10
 
 
-def clamp(lower, n, upper):
-	if n < lower:
-		return lower
-	if n > upper:
-		return upper
-	return n
-
-
 def diffs_are_possible(diffs):
+	# Top is the highest possible value of the principal thing, bottom the lowest
 	top = 9
 	bottom = 0
 	for diff in diffs:
 		top += diff
 		bottom += diff
-		old_top = top
-		top = clamp(bottom, top, 9)
-		bottom = clamp(0, bottom, old_top)
+		top = min(9, top)
+		bottom = max(bottom, 0)
 		if bottom >= 10 or top < 0:
 			return False
 	return True
