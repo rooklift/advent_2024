@@ -65,11 +65,11 @@ def main():
 	for foo in itertools.product(range(-9, 10), repeat = 4):
 		if not diffs_are_possible(foo):
 			continue
-		print(list(foo))
+		print(foo)
 		p2_try = 0
 		for m in monkeys:
 			try:
-				p2_try += m.lookup[tuple(foo)]
+				p2_try += m.lookup[foo]
 			except KeyError:
 				pass
 		if p2_try > p2_best:
