@@ -1,8 +1,10 @@
 import itertools
 
+
 def parser(filename):
 	with open(filename) as infile:
 		return [int(s) for s in infile.readlines() if s.strip() != ""]
+
 
 def iterate(n):
 	n ^= n * 64
@@ -12,6 +14,7 @@ def iterate(n):
 	n ^= n * 2048
 	n %= 16777216
 	return n
+
 
 class Monkey():
 	def __init__(self, num):
@@ -39,10 +42,8 @@ class Monkey():
 			self.lookup[key] = self.seq[i] % 10
 
 
-
-
-
 def main():
+
 	monkeys = [Monkey(num) for num in parser("22_input.txt")]
 
 	p2_best = 0
@@ -59,5 +60,6 @@ def main():
 			p2_best = p2_try
 
 	print(p2_best)
+
 
 main()
