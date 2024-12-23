@@ -71,7 +71,6 @@ def part2(nodes):
 def p2_recurse(nodes, all_maximal_cliques, clique, prospective, excluded):
 
 	# nodes is needed for edge lookup (the last 3 items are all sets that only store a name).
-	# Return value: are we done modifying clique?
 
 	if len(prospective) == 0 and len(excluded) == 0:
 		all_maximal_cliques.add(tuple(clique))
