@@ -24,10 +24,7 @@
 #
 # But then it should be easy to cache what the best way to generate each
 # of the possible sequences is.
-#
-# --------------------- UPDATE -----------------------------------------
-#
-# So this works for 2 intermediate robots (part 1) but not 25 (part 2).
+
 
 import functools
 
