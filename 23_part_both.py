@@ -72,7 +72,7 @@ def p2_recurse(nodes, all_maximal_cliques, clique, prospective, excluded):
 
 	# nodes is needed for edge lookup - dict of name --> set of connections.
 	# all_maximal_cliques is our globally available storage for maximal (not largest) cliques.
-
+	# The other 3 things are just sets that store only node names.
 
 	if len(prospective) == 0 and len(excluded) == 0:
 		all_maximal_cliques.add(tuple(clique))
