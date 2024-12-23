@@ -6,7 +6,6 @@ def parser(filename):
 def main():
 	pairs = parser("23_input.txt")
 	nodes = dict()					# token --> set of connections
-
 	for a, b in pairs:
 		if a not in nodes:
 			nodes[a] = set()
@@ -14,8 +13,8 @@ def main():
 			nodes[b] = set()
 		nodes[a].add(b)
 		nodes[b].add(a)
-
 	print(part1(nodes))
+	print(part2(nodes))
 
 def part1(nodes):
 	all_triples = set()
@@ -24,12 +23,14 @@ def part1(nodes):
 			for c in nodes[b]:		# So b-c definitely exists
 				if c in nodes[a]:
 					all_triples.add(tuple(sorted([a, b, c])))		# Sort to deduplicate
-
 	p1 = 0
 	for a, b, c in all_triples:
 		if a[0] == "t" or b[0] == "t" or c[0] == "t":
 			p1 += 1
-
 	return p1
+
+def part2(nodes):
+	# We want the Bron-Kerbosch algorithm, maybe
+	pass
 
 main()
