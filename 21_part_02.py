@@ -67,8 +67,7 @@ def parser(filename):
 		return [line.strip() for line in infile.readlines() if line.strip() != ""]
 
 def main():
-	input_filename = "21_paulson.txt"						# p1: 224326 , p2: 279638326609472
-	codes = parser(input_filename)
+	codes = parser("21_input.txt")
 	p1 = 0
 	p2 = 0
 	for code in codes:
@@ -76,7 +75,6 @@ def main():
 		p2 += solve(code, 25)
 	print(p1)
 	print(p2)
-	print(f"Input file was: {input_filename}")
 
 def solve(code, intermediate_robot_count):
 
@@ -195,6 +193,86 @@ def action_sequences(kp_dict, c1, c2, last_move = None):    # Given our position
 			ret.append(move + foo)
 	return only_smallest(ret)
 
+def action_sequences(kp_dict, c1, c2, last_move = None):	# Given our position at c1, return all sane sequences to go to c2, AND PUSH IT.
+
+	# Optimised by just picking 1 best case for all the small keypad possibilities...
+
+	if len(kp_dict) == 6:
+
+		if c1 == "A":
+			if c2 == "A":
+				return ["A"]
+			if c2 == "^":
+				return ["<A"]
+			if c2 == ">":
+				return ["vA"]
+			if c2 == "v":
+				return ["<vA"]			# Empirically found to be the best choice.
+			if c2 == "<":
+				return ["v<<A"]
+
+		if c1 == "^":
+			if c2 == "A":
+				return [">A"]
+			if c2 == "^":
+				return ["A"]
+			if c2 == ">":
+				return ["v>A"]			# Empirically found to be the best choice.
+			if c2 == "v":
+				return ["vA"]
+			if c2 == "<":
+				return ["v<A"]
+
+		if c1 == ">":
+			if c2 == "A":
+				return ["^A"]
+			if c2 == "^":
+				return ["<^A"]			# Empirically found to be the best choice.
+			if c2 == ">":
+				return ["A"]
+			if c2 == "v":
+				return ["<A"]
+			if c2 == "<":
+				return ["<<A"]
+
+		if c1 == "v":
+			if c2 == "A":
+				return ["^>A"]			# Empirically found to be the best choice.
+			if c2 == "^":
+				return ["^A"]
+			if c2 == ">":
+				return [">A"]
+			if c2 == "v":
+				return ["A"]
+			if c2 == "<":
+				return ["<A"]
+
+		if c1 == "<":
+			if c2 == "A":
+				return [">>^A"]
+			if c2 == "^":
+				return [">^A"]
+			if c2 == ">":
+				return [">>A"]
+			if c2 == "v":
+				return [">A"]
+			if c2 == "<":
+				return ["A"]
+
+	assert(len(kp_dict) == 12)
+
+	if c1 == c2:
+		return ["A"]
+
+	all_next = next_moves(kp_dict, c1, c2)
+	if last_move in all_next:
+		all_next = [last_move]
+	ret = []
+	for move in all_next:
+		next_c = next_position(kp_dict, c1, move)
+		for foo in action_sequences(kp_dict, next_c, c2, move):
+			ret.append(move + foo)
+	return only_smallest(ret)
 
 def next_moves(kp_dict, c1, c2):                            # Given our position at c1, return 1 or 2 possible next moves if we want to push c2.
 	assert(c1 != c2)
