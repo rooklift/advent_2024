@@ -7,23 +7,23 @@ def parser(filename):
 
 def main():
 	pairs = parser("23_input.txt")
-	nodes = dict()					# token --> set of connections
+	graph = dict()					# token --> set of connections
 	for a, b in pairs:
-		if a not in nodes:
-			nodes[a] = set()
-		if b not in nodes:
-			nodes[b] = set()
-		nodes[a].add(b)
-		nodes[b].add(a)
-	print(part1(nodes))
-	print(part2(nodes))
+		if a not in graph:
+			graph[a] = set()
+		if b not in graph:
+			graph[b] = set()
+		graph[a].add(b)
+		graph[b].add(a)
+	print(part1(graph))
+	print(part2(graph))
 
-def part1(nodes):
+def part1(graph):
 	all_triples = set()
-	for a in nodes:
-		for b in nodes[a]:			# So a-b definitely exists
-			for c in nodes[b]:		# So b-c definitely exists
-				if c in nodes[a]:
+	for a in graph:
+		for b in graph[a]:			# So a-b definitely exists
+			for c in graph[b]:		# So b-c definitely exists
+				if c in graph[a]:
 					all_triples.add(tuple(sorted([a, b, c])))		# Sort to deduplicate
 	p1 = 0
 	for a, b, c in all_triples:
@@ -31,7 +31,7 @@ def part1(nodes):
 			p1 += 1
 	return p1
 
-def part2(nodes):
+def part2(graph):
 
 	"""
 	WHAT CLAUDE SAYS ONE NEEDS TO DO TO MAKE ... Bron-Kerbosch Largest Clique Algorithm:
@@ -63,14 +63,14 @@ def part2(nodes):
 	"""
 
 	all_maximal_cliques = set()
-	p2_recurse(nodes, all_maximal_cliques, set(), set(nodes.keys()), set())
+	p2_recurse(graph, all_maximal_cliques, set(), set(graph.keys()), set())
 
 	largest = max(all_maximal_cliques, key = len)
 	return ",".join(sorted(list(largest)))
 
-def p2_recurse(nodes, all_maximal_cliques, clique, prospective, excluded):
+def p2_recurse(graph, all_maximal_cliques, clique, prospective, excluded):
 
-	# nodes is needed for edge lookup - dict of name --> set of connections.
+	# graph is needed for edge lookup - dict of name --> set of connections.
 	# all_maximal_cliques is our globally available storage for maximal (not largest) cliques.
 	# The other 3 things are just sets that store only node names.
 
@@ -81,16 +81,16 @@ def p2_recurse(nodes, all_maximal_cliques, clique, prospective, excluded):
 	pivot = random.choice(list(prospective | excluded))		# Good enough.
 
 	for v in list(prospective):
-		if v not in nodes[pivot]:
+		if v not in graph[pivot]:
 			clique.add(v)
 			prospective_prime = set()
 			excluded_prime = set()
-			for foo in nodes[v]:
+			for foo in graph[v]:
 				if foo in prospective:
 					prospective_prime.add(foo)
 				if foo in excluded:
 					excluded_prime.add(foo)
-			p2_recurse(nodes, all_maximal_cliques, clique, prospective_prime, excluded_prime)
+			p2_recurse(graph, all_maximal_cliques, clique, prospective_prime, excluded_prime)
 			clique.remove(v)
 			prospective.remove(v)
 			excluded.add(v)
