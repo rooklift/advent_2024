@@ -64,10 +64,9 @@ def part2(nodes):
 
 	all_maximal_cliques = set()
 	p2_recurse(nodes, all_maximal_cliques, set(), set(nodes.keys()), set())
-	largest_size = max([len(clique) for clique in all_maximal_cliques])
-	for clique in all_maximal_cliques:
-		if len(clique) == largest_size:
-			return ",".join(sorted(list(clique)))
+
+	largest = max(all_maximal_cliques, key = len)
+	return ",".join(sorted(list(largest)))
 
 def p2_recurse(nodes, all_maximal_cliques, clique, prospective, excluded):
 
