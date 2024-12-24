@@ -2,11 +2,11 @@ def parser(filename):
 	with open(filename) as infile:
 		parts = infile.read().strip().split("\n\n")
 
-	input_dict = dict()
+	initial_wires = dict()
 
 	for line in parts[0].split("\n"):
 		key, val = line.split(": ")
-		input_dict[key] = True if val == "1" else False
+		initial_wires[key] = True if val == "1" else False
 
 	connections = []
 
@@ -14,8 +14,7 @@ def parser(filename):
 		tokens = line.split(" ")
 		connections.append(Gate(tokens[0], tokens[1], tokens[2], tokens[4]))
 
-	return input_dict, connections
-
+	return initial_wires, connections
 
 
 class Gate():
@@ -24,13 +23,12 @@ class Gate():
 		self.in2 = in2
 		self.op = op
 		self.out = out
-		self.handled = False
 
 	def __str__(self):
 		return f"{self.in1} {self.op} {self.in2} --> {self.out}"
 
 
-def handle_gate(in1, in2, op):
+def logic(in1, in2, op):
 	if op == "XOR":
 		return (in1 or in2) and not (in1 and in2)
 	if op == "AND":
@@ -41,12 +39,7 @@ def handle_gate(in1, in2, op):
 
 
 def main():
-	input_dict, gates = parser("24_input.txt")
-
-	wires = dict()		# e.g. kpf --> True
-
-	for wire in input_dict:
-		wires[wire] = input_dict[wire]
+	wires, gates = parser("24_input.txt")
 
 	todo = gates[:]
 
@@ -54,11 +47,9 @@ def main():
 
 		for gate in todo[::-1]:
 			if gate.in1 in wires and gate.in2 in wires:
-				assert(gate.out not in wires)
-				wires[gate.out] = handle_gate(wires[gate.in1], wires[gate.in2], gate.op)
-				gate.handled = True
+				wires[gate.out] = logic(wires[gate.in1], wires[gate.in2], gate.op)
 
-		todo = [gate for gate in todo if not gate.handled]
+		todo = [gate for gate in todo if gate.out not in wires]
 
 		if len(todo) == 0:
 			break
