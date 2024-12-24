@@ -62,6 +62,8 @@ def simulate(x, y, gates):
 			break
 	return wires_to_digit(wires, "z")
 
+# -------------------------------------------------------------------------------------------------
+
 def main():
 	wires, gates = parser("24_input.txt")
 
@@ -73,6 +75,8 @@ def main():
 	print(f"y = {y}")
 	print(f"z = {x + y} (expected)")
 	print(f"z = {z_actual} (actual, diff = {(x + y) - z_actual}")
+
+	# So there's probably some way to find the defective wires...
 
 
 main()
