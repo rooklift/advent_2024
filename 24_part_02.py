@@ -38,7 +38,6 @@ def wires_to_digit(all_wires, prefix):
 def digit_to_wires(val, prefix, bits):
 	ret = dict()
 	s = "{0:0{1}b}".format(val, bits)
-	print(s)
 	for i, c in enumerate(s[::-1]):
 		assert(c == "0" or c == "1")
 		wire_name = "{}{:02}".format(prefix, i)
@@ -64,10 +63,13 @@ def simulate(x, y, gates):
 def main():
 	wires, gates = parser("24_input.txt")
 
+	# We rewrote the simulator to take actual int values for x and y, then infer the wires.
+	# (For Part 1 we are given the wires, but for Part 2 need to be able to use arbitrary x and y.)
+
+	print("PART ONE:")
 	x = wires_to_digit(wires, "x")
 	y = wires_to_digit(wires, "y")
 	z_actual = simulate(x, y, gates)
-
 	print(f"x = {x}")
 	print(f"y = {y}")
 	print(f"z = {x + y} (expected)")
