@@ -26,30 +26,23 @@ def solve_both(graph):
 
 	cliques[1] = {(c,) for c in graph.keys()}		# Set of len-1 cliques as tuples like ("ab",)
 
-	duplicated_work = 0
-
 	for size in range(2, 14):
 		smaller_cliques = cliques[size - 1]
 		for cliq in smaller_cliques:				# Each cliq will be a tuple like ("ab", "si", "zd")
 			first_member_connections = graph[cliq[0]]
 			for c in first_member_connections:
-				if c in cliq:
+				if c <= cliq[-1]:					# Only form new cliques alphabetically sorted
 					continue
+				if c in cliq:
+					assert(False)
 				ok = True
 				for friend in cliq[1:]:
 					if c not in graph[friend]:
 						ok = False
 						break
 				if ok:
-					new_cliq = tuple(sorted(cliq + (c,)))
-					if new_cliq in cliques[size]:
-						duplicated_work += 1
-					else:
-						cliques[size].add(new_cliq)
-
-	# There's a huge amount of duplicated work in the above.
-
-	print("Duplicated work count:", duplicated_work)
+					new_cliq = cliq + (c,)
+					cliques[size].add(new_cliq)
 
 	p1 = 0
 	for a, b, c in cliques[3]:
