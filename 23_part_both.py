@@ -33,8 +33,6 @@ def solve_both(graph):
 			for c in first_member_connections:
 				if c <= cliq[-1]:					# Only form new cliques alphabetically sorted
 					continue
-				if c in cliq:
-					assert(False)
 				ok = True
 				for friend in cliq[1:]:
 					if c not in graph[friend]:
