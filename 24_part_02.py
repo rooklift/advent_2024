@@ -18,6 +18,9 @@ class Gate():
 		self.op = op
 		self.out = out
 
+	def __str__(self):
+		return f"{self.in1} {self.op} {self.in2} -> {self.out}
+
 def logic(in1, in2, op):
 	if op == "XOR":
 		return (in1 or in2) and not (in1 and in2)
