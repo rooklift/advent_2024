@@ -34,16 +34,18 @@ def logic(in1, in2, op):
 
 def wires_to_digit(all_wires, prefix):
 	result = 0
-	wire_names = sorted([key for key in all_wires if key.startswith(prefix)], reverse = True)
-	for name in wire_names:
+	wire_names = sorted([key for key in all_wires if key.startswith(prefix)])
+	for key in wire_names[::-1]:
 		result *= 2
-		result += 1 if all_wires[name] == True else 0
+		result += 1 if all_wires[key] == True else 0
 	return result
 
 def digit_to_wires(val, prefix, bits):
 	ret = dict()
-	s = "{0:{1}b}".format(val, bits)
+	s = "{0:0{1}b}".format(val, bits)
+	print(s)
 	for i, c in enumerate(s[::-1]):
+		assert(c == "0" or c == "1")
 		wire_name = "{}{:02}".format(prefix, i)
 		ret[wire_name] = True if c == "1" else False
 	return ret
