@@ -15,21 +15,58 @@ def main():
 			graph[b] = set()
 		graph[a].add(b)
 		graph[b].add(a)
-	print(part1(graph))
-	print(part2(graph))
+	solve_both(graph)
 
-def part1(graph):
-	all_triples = set()
-	for a in graph:
-		for b in graph[a]:			# So a-b definitely exists
-			for c in graph[b]:		# So b-c definitely exists
-				if c in graph[a]:
-					all_triples.add(tuple(sorted([a, b, c])))		# Sort to deduplicate
+def solve_both(graph):
+
+	# This is a simple algorithm based on finding all cliques (whether maximal or not)
+	# at size n and then building up for n+1 etc etc. See the part2() function for better.
+
+	cliques = [None, set(), set(), set(), set(), set(), set(), set(), set(), set(), set(), set(), set(), set()]
+
+	cliques[1] = {(c,) for c in graph.keys()}		# Set of len-1 cliques as tuples like ("ab",)
+
+	duplicated_work = 0
+
+	for size in range(2, 14):
+		smaller_cliques = cliques[size - 1]
+		for cliq in smaller_cliques:				# Each cliq will be a tuple like ("ab", "si", "zd")
+			first_member_connections = graph[cliq[0]]
+			for c in first_member_connections:
+				if c in cliq:
+					continue
+				ok = True
+				for friend in cliq[1:]:
+					if c not in graph[friend]:
+						ok = False
+						break
+				if ok:
+					new_cliq = tuple(sorted(cliq + (c,)))
+					if new_cliq in cliques[size]:
+						duplicated_work += 1
+					else:
+						cliques[size].add(new_cliq)
+
+	# There's a huge amount of duplicated work in the above.
+
+	print("Duplicated work count:", duplicated_work)
+
 	p1 = 0
-	for a, b, c in all_triples:
+	for a, b, c in cliques[3]:
 		if a[0] == "t" or b[0] == "t" or c[0] == "t":
 			p1 += 1
-	return p1
+
+	p2 = ",".join(list(cliques[13])[0])
+
+	print("Part 1:", p1)
+	print("Part 2:", p2)
+
+
+main()
+
+# -------------------------------------------------------------------------------------------------
+# This code is unused now since I finally found a way to do it without using
+# algorithms I didn't know and had to ask Claude about...
 
 def part2(graph):
 
@@ -94,5 +131,3 @@ def p2_recurse(graph, all_maximal_cliques, clique, prospective, excluded):
 			clique.remove(v)
 			prospective.remove(v)
 			excluded.add(v)
-
-main()
