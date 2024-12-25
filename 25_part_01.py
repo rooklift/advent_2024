@@ -9,9 +9,8 @@ def parser(filename):
 		items.append(parse_item(item))
 	return items
 
-def parse_item(schematic):
-	lines = schematic.split("\n")
-	i = 0
+def parse_item(item):
+	lines = item.split("\n")
 	s = "0b"
 	for line in lines:
 		for c in line:
