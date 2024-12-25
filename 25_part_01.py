@@ -1,44 +1,35 @@
+# I decided to do this the cutest possible way, by turning keys and
+# locks into binary numbers, which can be checked for overlap with &
+
 def parser(filename):
 	with open(filename) as infile:
 		schema = [item.strip() for item in infile.read().split("\n\n")]
-	keys = []
-	locks = []
+	items = []
 	for item in schema:
-		if item.endswith("#####"):
-			keys.append(parse_item(item, True))
-		elif item.startswith("#####"):
-			locks.append(parse_item(item))
-		else:
-			raise ValueError
-	return keys, locks
+		items.append(parse_item(item))
+	return items
 
-
-def parse_item(schematic, upsidedown = False):
+def parse_item(schematic):
 	lines = schematic.split("\n")
-	vals = [None, None, None, None, None]
-	if upsidedown:
-		lines = lines[::-1]
-	for y, line in enumerate(lines):
-		for x, c in enumerate(line):
-			if c == "." and vals[x] == None:
-				vals[x] = y - 1
-	assert(None not in vals)
-	return tuple(vals)
-
+	i = 0
+	s = "0b"
+	for line in lines:
+		for c in line:
+			if c == ".":
+				s += "0"
+			elif c == "#":
+				s += "1"
+			else:
+				raise ValueError
+	return int(s, 2)
 
 def main():
-	keys, locks = parser("25_input.txt")
+	items = parser("25_input.txt")
 	result = 0
-	for key in keys:
-		for lock in locks:
-			ok = True
-			for x in range(5):
-				if key[x] + lock[x] > 5:
-					ok = False
-					break
-			if ok:
+	for i, item in enumerate(items):
+		for j, other in enumerate(items[i + 1:]):
+			if not (item & other):
 				result += 1
 	print(result)
-
 
 main()
