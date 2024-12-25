@@ -14,12 +14,7 @@ def parse_item(item):
 	s = "0b"
 	for line in lines:
 		for c in line:
-			if c == ".":
-				s += "0"
-			elif c == "#":
-				s += "1"
-			else:
-				raise ValueError
+			s += ("0" if c == "." else "1")
 	return int(s, 2)
 
 def main():
