@@ -1,3 +1,10 @@
+# Here we really consider the names in the input as specifying the names of
+# gates rather than wires as it says (my way makes more sense to me).
+#
+# A gate has 2 inputs (aside from the input gates which are just always
+# outputting 0 or 1. The output of a gate can be used by multiple other
+# gates.
+
 def parser(filename):
 	with open(filename) as infile:
 		parts = infile.read().strip().split("\n\n")
