@@ -1,4 +1,4 @@
-import sys, time, zlib
+import zlib
 from PIL import Image
 
 
