@@ -14,12 +14,15 @@ def parser(filename):
 class Gate():
 	def __init__(self, in1, op, in2, out):
 		self.in1 = in1
-		self.in2 = in2
 		self.op = op
+		self.in2 = in2
 		self.out = out
 
 	def __str__(self):
 		return f"{self.in1} {self.op} {self.in2} -> {self.out}"
+
+	def copy(self):
+		return Gate(self.in1, self.op, self.in2, self.out)
 
 def logic(in1, in2, op):
 	if op == "XOR":
@@ -53,13 +56,28 @@ def simulate(x, y, gates):
 	wires |= digit_to_wires(y, "y", 45)
 	todo = gates[:]
 	while True:
+		did_something = False
 		for gate in todo:
 			if gate.in1 in wires and gate.in2 in wires:
 				wires[gate.out] = logic(wires[gate.in1], wires[gate.in2], gate.op)
+				did_something = True
+		if not did_something:
+			raise ValueError
 		todo = [gate for gate in todo if gate.out not in wires]
 		if len(todo) == 0:
 			break
 	return wires_to_digit(wires, "z")
+
+def test_swaps(x, y, swaps, gates_original):
+	gates = [gate.copy() for gate in gates_original]
+	for swap in swaps:
+		fixme = []
+		for gate in gates:
+			if gate.out in swap:
+				fixme.append(gate)
+		assert(len(fixme) == 2)
+		fixme[0].out, fixme[1].out = fixme[1].out, fixme[0].out
+	return simulate(x, y, gates)
 
 # -------------------------------------------------------------------------------------------------
 
@@ -78,7 +96,20 @@ def main():
 	print(f"z = {x + y} (expected)")
 	print(f"z = {z_actual} (actual, diff = {(x + y) - z_actual}")
 
-	# So there's probably some way to find the defective wires...
+	print("PART TWO:")
 
+	# These aren't correct...
+
+	swaps = [("tkq", "ghp"), ("krs", "mhr"), ("bwd", "cdh"), ("htv", "gpr")]	# Infinite loop
+
+	print(swaps)
+	try:
+		z_actual = test_swaps(x, y, swaps, gates)
+		print(f"x = {x}")
+		print(f"y = {y}")
+		print(f"z = {x + y} (expected)")
+		print(f"z = {z_actual} (actual, diff = {(x + y) - z_actual}")
+	except ValueError:
+		print("Infinite loop!")
 
 main()
