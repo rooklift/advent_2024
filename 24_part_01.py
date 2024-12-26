@@ -45,7 +45,7 @@ def main():
 
 	while True:
 
-		for gate in todo[::-1]:
+		for gate in todo:
 			if gate.in1 in wires and gate.in2 in wires:
 				wires[gate.out] = logic(wires[gate.in1], wires[gate.in2], gate.op)
 

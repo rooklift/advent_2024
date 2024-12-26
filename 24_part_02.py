@@ -53,7 +53,7 @@ def simulate(x, y, gates):
 	wires |= digit_to_wires(y, "y", 45)
 	todo = gates[:]
 	while True:
-		for gate in todo[::-1]:
+		for gate in todo:
 			if gate.in1 in wires and gate.in2 in wires:
 				wires[gate.out] = logic(wires[gate.in1], wires[gate.in2], gate.op)
 		todo = [gate for gate in todo if gate.out not in wires]
