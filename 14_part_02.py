@@ -1,4 +1,4 @@
-import sys, time
+import sys, time, zlib
 from PIL import Image
 
 
@@ -32,18 +32,49 @@ def parser(filename):
 
 def main():
 	robots = parser("14_input.txt")
+
+	best_score = None
+	best_string = None
+	best_i = None
+
 	for i in range(0, WIDTH * HEIGHT):		# After this many ticks everything will be back where it started, I think.
 		positions = set()
 		for robot in robots:
 			x, y = robot.position_after(i)
 			positions.add((x, y))
-		draw_positions(positions, f"./14_images/{i}.png")
+		s = get_string(positions)
+		score = get_string_score(s)
+		if best_score == None or score < best_score:
+			best_score = score
+			best_string = s
+			best_i = i
+	print(best_i)
+	draw_string(best_string, "14_image.png")
 
 
-def draw_positions(positions, outfilename):
-	img = Image.new("RGB", (WIDTH, HEIGHT), color = "black")
+def get_string(positions):
+	chars = ["." for i in range(WIDTH * HEIGHT)]
 	for x, y in positions:
-		img.putpixel((x, y), (255, 255, 255))
+		i = y * WIDTH + x
+		chars[i] = "#"
+	return "".join(chars)
+
+
+def get_string_score(s):
+	data = s.encode("utf-8")
+	return len(zlib.compress(data))
+
+
+def draw_string(s, outfilename):
+	img = Image.new("RGB", (WIDTH, HEIGHT), color = "black")
+	x, y = 0, 0
+	for c in s:
+		if c == "#":
+			img.putpixel((x, y), (255, 255, 255))
+		x += 1
+		if x >= WIDTH:
+			x = 0
+			y += 1
 	img.save(outfilename)
 
 
