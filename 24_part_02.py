@@ -1,28 +1,28 @@
 def parser(filename):
 	with open(filename) as infile:
 		parts = infile.read().strip().split("\n\n")
-	initial_wires = dict()
+	inputs = dict()
 	for line in parts[0].split("\n"):
 		key, val = line.split(": ")
-		initial_wires[key] = True if val == "1" else False
+		inputs[key] = True if val == "1" else False
 	connections = []
 	for line in parts[1].split("\n"):
 		tokens = line.split(" ")
 		connections.append(Gate(tokens[0], tokens[1], tokens[2], tokens[4]))
-	return initial_wires, connections
+	return inputs, connections
 
 class Gate():
-	def __init__(self, in1, op, in2, out):
+	def __init__(self, in1, op, in2, name):
 		self.in1 = in1
 		self.op = op
 		self.in2 = in2
-		self.out = out
+		self.name = name
 
 	def __str__(self):
-		return f"{self.in1} {self.op} {self.in2} -> {self.out}"
+		return f"{self.in1} {self.op} {self.in2} -> {self.name}"
 
 	def copy(self):
-		return Gate(self.in1, self.op, self.in2, self.out)
+		return Gate(self.in1, self.op, self.in2, self.name)
 
 def logic(in1, in2, op):
 	if op == "XOR":
@@ -33,83 +33,95 @@ def logic(in1, in2, op):
 		return in1 or in2
 	raise ValueError
 
-def wires_to_digit(all_wires, prefix):
+def known_gates_to_digit(known, prefix):
 	result = 0
-	wire_names = sorted([key for key in all_wires if key.startswith(prefix)])
+	wire_names = sorted([key for key in known if key.startswith(prefix)])
 	for key in wire_names[::-1]:
 		result *= 2
-		result += 1 if all_wires[key] == True else 0
+		result += 1 if known[key] == True else 0
 	return result
 
-def digit_to_wires(val, prefix, bits):
+def digit_to_inputs(val, prefix, bits):
 	ret = dict()
 	s = "{0:0{1}b}".format(val, bits)
 	for i, c in enumerate(s[::-1]):
 		assert(c == "0" or c == "1")
-		wire_name = "{}{:02}".format(prefix, i)
-		ret[wire_name] = True if c == "1" else False
+		input_name = "{}{:02}".format(prefix, i)
+		ret[input_name] = True if c == "1" else False
 	return ret
 
 def simulate(x, y, gates):
-	wires = dict()
-	wires |= digit_to_wires(x, "x", 45)
-	wires |= digit_to_wires(y, "y", 45)
+	outputs = dict()
+	outputs |= digit_to_inputs(x, "x", 45)
+	outputs |= digit_to_inputs(y, "y", 45)
 	todo = gates[:]
 	while True:
 		did_something = False
 		for gate in todo:
-			if gate.in1 in wires and gate.in2 in wires:
-				wires[gate.out] = logic(wires[gate.in1], wires[gate.in2], gate.op)
+			if gate.in1 in outputs and gate.in2 in outputs:
+				outputs[gate.name] = logic(outputs[gate.in1], outputs[gate.in2], gate.op)
 				did_something = True
 		if not did_something:
 			raise ValueError
-		todo = [gate for gate in todo if gate.out not in wires]
+		todo = [gate for gate in todo if gate.name not in outputs]
 		if len(todo) == 0:
 			break
-	return wires_to_digit(wires, "z")
+	return known_gates_to_digit(outputs, "z")
 
 def test_swaps(x, y, swaps, gates_original):
 	gates = [gate.copy() for gate in gates_original]
 	for swap in swaps:
 		fixme = []
 		for gate in gates:
-			if gate.out in swap:
+			if gate.name in swap:
 				fixme.append(gate)
 		assert(len(fixme) == 2)
-		fixme[0].out, fixme[1].out = fixme[1].out, fixme[0].out
+		fixme[0].name, fixme[1].name = fixme[1].name, fixme[0].name
 	return simulate(x, y, gates)
 
 # -------------------------------------------------------------------------------------------------
 
 def main():
-	wires, gates = parser("24_input.txt")
+	inputs, gates = parser("24_input.txt")
 
 	# We rewrote the simulator to take actual int values for x and y, then infer the wires.
 	# (For Part 1 we are given the wires, but for Part 2 need to be able to use arbitrary x and y.)
 
 	print("PART ONE:")
-	x = wires_to_digit(wires, "x")
-	y = wires_to_digit(wires, "y")
+	x = known_gates_to_digit(inputs, "x")
+	y = known_gates_to_digit(inputs, "y")
 	z_actual = simulate(x, y, gates)
 	print(f"x = {x}")
 	print(f"y = {y}")
 	print(f"z = {x + y} (expected)")
 	print(f"z = {z_actual} (actual, diff = {(x + y) - z_actual}")
 
+	# Some swaps determined by visualising the circuit...
+	# Print all possibilities which work...
+
 	print("PART TWO:")
 
-	# These aren't correct...
+	all_intermediate_names = []
 
-	swaps = [("tkq", "ghp"), ("krs", "mhr"), ("bwd", "cdh"), ("htv", "gpr")]	# Infinite loop
+	for gate in gates:
+		if gate.name.startswith("z"):
+			continue
+		all_intermediate_names.append(gate.name)
 
-	print(swaps)
-	try:
-		z_actual = test_swaps(x, y, swaps, gates)
-		print(f"x = {x}")
-		print(f"y = {y}")
-		print(f"z = {x + y} (expected)")
-		print(f"z = {z_actual} (actual, diff = {(x + y) - z_actual}")
-	except ValueError:
-		print("Infinite loop!")
+	for i, name in enumerate(all_intermediate_names):
+		for other in all_intermediate_names[i + 1:]:
+
+			swaps = []
+			swaps.append(("gpr", "z10"))		# 100% certain
+			swaps.append(("z21", "nks"))		# 100% certain
+			swaps.append(("z33", "ghp"))		# Pretty certain
+			swaps.append((name, other))
+
+			try:
+				z_actual = test_swaps(x, y, swaps, gates)
+				if z_actual == x + y:
+					print(swaps)
+			except ValueError:
+				pass
 
 main()
