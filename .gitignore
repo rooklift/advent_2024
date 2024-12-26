@@ -1,8 +1,6 @@
 
 *.txt
 *.exe
-/14_images
-*.png
 16_part_both_assisted.py
 /21_junk
 24_circuit_visualiser.py
