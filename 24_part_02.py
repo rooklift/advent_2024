@@ -4,6 +4,9 @@
 # A gate has 2 inputs (aside from the input gates which are just always
 # outputting 0 or 1. The output of a gate can be used by multiple other
 # gates.
+#
+# We are thus trying to swap the positions of 4 pairs of gates.
+# This means just swapping their names (as interpreted above).
 
 def parser(filename):
 	with open(filename) as infile:
